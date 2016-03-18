@@ -5,7 +5,7 @@ This library provides an utility to manage WebDriver instances. It helps to crea
 
 To use this library in a maven project you have to add these dependencies:
 
-```
+```xml
 <dependency>
     <groupId>ru.stqa.selenium</groupId>
     <artifactId>webdriver-factory</artifactId>
@@ -32,7 +32,7 @@ The factory implements three main strategies (or modes) to manage instances:
 
 **1) The simplest use case**
 
-```
+```java
 Capabilities firefox = DesiredCapabilities.firefox();
 // create a new managed instance
 WebDriver driver = WebDriverFactory.getDriver(firefox);
@@ -44,7 +44,7 @@ WebDriverFactory.dismissDriver(driver);
 
 **2) If one requests a new driver with the same capabilities** the existing instance should be reused in SINGLETON and THREADLOCAL_SINGLETON modes:
 
-```
+```java
 Capabilities firefox = DesiredCapabilities.firefox();
 // create a new managed instance
 WebDriver driver = WebDriverFactory.getDriver(firefox);
@@ -71,7 +71,7 @@ What happens to the previous instances depends on the factory mode:
 
 4) One should not care about destroying each single WebDriver instance in each single test case, they can be destroyed all at once in the end of the test suite:
 
-```
+```java
 @Test
 public void testSomething() {
   Capabilities firefox = DesiredCapabilities.firefox();
@@ -98,7 +98,7 @@ public void stopAllDrivers() {
 
 5) One can change the factory mode if there are no active managed instances.
 
-```
+```java
 WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
 ```
 
