@@ -26,9 +26,9 @@ To use this library in a maven project you have to add these dependencies:
 It is curious that the library implements [Object Pool design pattern](http://sourcemaking.com/design_patterns/object_pool), but for historical reason it is called "a factory". The instances created by the factory are called "managed instances".
 
 The factory implements three main strategies (or modes) to manage instances:
-* SINGLETON mode allows a single managed instance of WebDriver to exist in any given moment;
-* THREADLOCAL_SINGLETON mode (the default one since version 1.1.42) allows a single managed instance of WebDriver to exist for each thread;
-* UNRESTRICTED mode does not impose any restrictions and creates a new managed instance on each request.
+* `SINGLETON` mode allows a single managed instance of WebDriver to exist in any given moment;
+* `THREADLOCAL_SINGLETON` mode (the default one since version 1.1.42) allows a single managed instance of WebDriver to exist for each thread;
+* `UNRESTRICTED` mode does not impose any restrictions and creates a new managed instance on each request.
 
 **1) The simplest use case**
 
@@ -42,7 +42,7 @@ driver.get("http://seleniumhq.org/");
 WebDriverFactory.dismissDriver(driver);
 ```
 
-**2) If one requests a new driver with the same capabilities** the existing instance should be reused in SINGLETON and THREADLOCAL_SINGLETON modes:
+**2) If one requests a new driver with the same capabilities** the existing instance should be reused in `SINGLETON` and `THREADLOCAL_SINGLETON` modes:
 
 ```java
 Capabilities firefox = DesiredCapabilities.firefox();
@@ -60,14 +60,14 @@ driver.get("http://selenium2.ru/");
 WebDriverFactory.dismissDriver(driver);
 ```
 
-Additionaly, the factory checks availability of the browser (calls getCurrentUrl) before returning the instance to the client. If the browser is not available a new WebDriver instance should be created (and a new browser should be started) instead of the broken one.
+Additionaly, the factory checks availability of the browser (by default it checks that `driver.getWindowHandles().size() > 0`) before returning the instance to the client. If the browser is not available a new WebDriver instance should be created (and a new browser should be started) instead of the broken one.
 
 **3) If one requests a new driver with different capabilities** a new WebDriver instance should be created 
 
 What happens to the previous instances depends on the factory mode:
-* in SINGLETON mode the previous managed instance of the driver should be destroyed,
-* in THREADLOCAL_SINGLETON mode the previous managed instance created in the current thread should be destroyed, managed instances created in other threads should be kept untouched,
-* in UNRESTRICTED mode all running instances are kept untouched.
+* in `SINGLETON` mode the previous managed instance of the driver should be destroyed,
+* in `THREADLOCAL_SINGLETON` mode the previous managed instance created in the current thread should be destroyed, managed instances created in other threads should be kept untouched,
+* in `UNRESTRICTED` mode all running instances are kept untouched.
 
 4) One should not care about destroying each single WebDriver instance in each single test case, they can be destroyed all at once in the end of the test suite:
 
@@ -94,7 +94,7 @@ public void stopAllDrivers() {
 }
 ```
 
-(Ability to destroy all managed instances at once is probably the only usable feature of UNRESTRICTED mode)
+(Ability to destroy all managed instances at once is probably the only usable feature of `UNRESTRICTED` mode)
 
 5) One can change the factory mode if there are no active managed instances.
 
