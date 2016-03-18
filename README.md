@@ -1,4 +1,4 @@
-WebDriver Factory
+WebDriverFactory
 ====================
 
 This library provides an utility to manage WebDriver instances. It helps to create, reuse and dismiss WebDriver instances.
@@ -102,4 +102,4 @@ public void stopAllDrivers() {
 WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
 ```
 
-There are [several samples](https://github.com/barancev/webdriver-extensions/tree/master/webdriver-factory-samples/src/test/java/ru/stqa/selenium/factory/samples) that show how to use WebDriverFactory with test frameworks JUnit and TestNG.
+There are [several samples](https://github.com/barancev/webdriver-factory-samples/tree/master/src/test/java/ru/stqa/selenium/factory/samples) that show how to use WebDriverFactory with test frameworks JUnit and TestNG.
