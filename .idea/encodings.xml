@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+  <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/webdriver-expected-conditions" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/webdriver-factory" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/webdriver-implicit-wait-wrapper" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/webdriver-logging-wrapper" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/webdriver-repeatable-actions" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/webdriver-wrapper" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
