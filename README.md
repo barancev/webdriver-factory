@@ -3,7 +3,7 @@ WebDriver Factory
 
 This library provides an utility to manage WebDriver instances. It helps to create, reuse and dismiss WebDriver instances.
 
-To use this library in a maven project you have to add a dependency
+To use this library in a maven project you have to add these dependencies:
 
 ```
 <dependency>
@@ -23,7 +23,7 @@ To use this library in a maven project you have to add a dependency
 </dependency>
 ```
 
-It is curious that the library implements [[Object Pool design pattern|http://sourcemaking.com/design_patterns/object_pool]], but for historical reason it is called "a factory". The instances created by the factory are called "managed instances".
+It is curious that the library implements [Object Pool design pattern|http://sourcemaking.com/design_patterns/object_pool], but for historical reason it is called "a factory". The instances created by the factory are called "managed instances".
 
 The factory implements three main strategies (or modes) to manage instances:
 * SINGLETON mode allows a single managed instance of WebDriver to exist in any given moment;
@@ -102,4 +102,4 @@ public void stopAllDrivers() {
 WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
 ```
 
-There are [[several samples|https://github.com/barancev/webdriver-extensions/tree/master/webdriver-factory-samples/src/test/java/ru/stqa/selenium/factory/samples]] that show how to use WebDriverFactory with test frameworks JUnit and TestNG.
+There are [several samples|https://github.com/barancev/webdriver-extensions/tree/master/webdriver-factory-samples/src/test/java/ru/stqa/selenium/factory/samples] that show how to use WebDriverFactory with test frameworks JUnit and TestNG.
