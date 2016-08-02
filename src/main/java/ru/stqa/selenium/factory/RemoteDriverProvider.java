@@ -33,7 +33,7 @@ public interface RemoteDriverProvider {
    */
   WebDriver createDriver(String hub, Capabilities capabilities);
 
-  static class Default implements RemoteDriverProvider {
+  class Default implements RemoteDriverProvider {
     @Override
     public WebDriver createDriver(String hub, Capabilities capabilities) {
       try {

@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.server.DefaultDriverProvider;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,7 +36,7 @@ public class WebDriverFactoryTest {
     fakeCapabilities.setBrowserName("FAKE");
 
     WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
-    WebDriverFactory.addDriverProvider(new DefaultDriverProvider(
+    WebDriverFactory.addLocalDriverProvider(new LocalDriverProvider.Default(
         fakeCapabilities, FakeWebDriver.class.getName()));
   }
 

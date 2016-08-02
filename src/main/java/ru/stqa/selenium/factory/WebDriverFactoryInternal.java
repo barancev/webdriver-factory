@@ -19,10 +19,6 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.server.DefaultDriverFactory;
-import org.openqa.selenium.remote.server.DefaultDriverProvider;
-import org.openqa.selenium.remote.server.DriverFactory;
-import org.openqa.selenium.remote.server.DriverProvider;
 
 import java.util.LinkedList;
 import java.util.ServiceLoader;
@@ -37,39 +33,32 @@ public abstract class WebDriverFactoryInternal {
   private String defaultHub = null;
   protected DriverAlivenessChecker alivenessChecker = new DefaultDriverAlivenessChecker();
 
-  private DriverFactory factory = new DefaultDriverFactory();
+  private LinkedList<LocalDriverProvider> localDriverProviders = new LinkedList<LocalDriverProvider>();
   {
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.chrome(),
-            "org.openqa.selenium.chrome.ChromeDriver"));
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.firefox(),
-            "org.openqa.selenium.firefox.FirefoxDriver"));
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.internetExplorer(),
-            "org.openqa.selenium.ie.InternetExplorerDriver"));
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.edge(),
-            "org.openqa.selenium.edge.EdgeDriver"));
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.opera(),
-            "com.opera.core.systems.OperaDriver"));
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.operaBlink(),
-            "org.openqa.selenium.opera.OperaDriver"));
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.safari(),
-            "org.openqa.selenium.safari.SafariDriver"));
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.phantomjs(),
-            "org.openqa.selenium.phantomjs.PhantomJSDriver"));
-    factory.registerDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.htmlUnit(),
-            "org.openqa.selenium.htmlunit.HtmlUnitDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.edge(), "org.openqa.selenium.edge.EdgeDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.operaBlink(), "org.openqa.selenium.opera.OperaDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver"));
+    localDriverProviders.add(new LocalDriverProvider.Default(
+      DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver"));
+    for (LocalDriverProvider provider : ServiceLoader.load(LocalDriverProvider.class)) {
+      localDriverProviders.add(provider);
+    }
   }
 
-  private LinkedList<RemoteDriverProvider> remoteDriverProviders
-      = new LinkedList<RemoteDriverProvider>();
+  private LinkedList<RemoteDriverProvider> remoteDriverProviders = new LinkedList<RemoteDriverProvider>();
   {
     remoteDriverProviders.add(new RemoteDriverProvider.Default());
     for (RemoteDriverProvider provider : ServiceLoader.load(RemoteDriverProvider.class)) {
@@ -77,8 +66,8 @@ public abstract class WebDriverFactoryInternal {
     }
   }
 
-  void addDriverProvider(DriverProvider provider) {
-    factory.registerDriverProvider(provider);
+  void addLocalDriverProvider(LocalDriverProvider provider) {
+    localDriverProviders.addFirst(provider);
   }
 
   void addRemoteDriverProvider(RemoteDriverProvider provider) {
@@ -103,6 +92,16 @@ public abstract class WebDriverFactoryInternal {
         : createRemoteDriver(hub, capabilities);
   }
 
+  private WebDriver createLocalDriver(Capabilities capabilities) {
+    for (LocalDriverProvider provider : localDriverProviders) {
+      WebDriver driver = provider.createDriver(capabilities);
+      if (driver != null) {
+        return driver;
+      }
+    }
+    throw new Error("Can't find local driver provider for capabilities " + capabilities);
+  }
+
   private WebDriver createRemoteDriver(String hub, Capabilities capabilities) {
     for (RemoteDriverProvider provider : remoteDriverProviders) {
       WebDriver driver = provider.createDriver(hub, capabilities);
@@ -111,10 +110,6 @@ public abstract class WebDriverFactoryInternal {
       }
     }
     throw new Error("Can't find remote driver provider for capabilities " + capabilities);
-  }
-
-  private WebDriver createLocalDriver(Capabilities capabilities) {
-    return factory.newInstance(capabilities);
   }
 
   public void setDriverAlivenessChecker(DriverAlivenessChecker alivenessChecker) {

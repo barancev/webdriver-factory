@@ -19,14 +19,14 @@
   </licenses>
 
   <developers>
-    <developer> 
-      <id>barancev</id> 
-      <name>Alexei Barantsev</name> 
-      <roles> 
-        <role>Owner</role> 
-      </roles> 
-    </developer> 
-  </developers> 
+    <developer>
+      <id>barancev</id>
+      <name>Alexei Barantsev</name>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+  </developers>
 
   <scm>
     <connection>scm:git:git@github.com:barancev/webdriver-factory.git</connection>
@@ -39,13 +39,7 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>2.53.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-server</artifactId>
-      <version>2.53.0</version>
+      <version>2.53.1</version>
       <scope>provided</scope>
     </dependency>
 
@@ -58,7 +52,7 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>htmlunit-driver</artifactId>
-      <version>2.20</version>
+      <version>2.21</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

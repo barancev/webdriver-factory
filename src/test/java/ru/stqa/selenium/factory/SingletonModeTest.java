@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.server.DefaultDriverProvider;
 
 import static org.junit.Assert.*;
 
@@ -36,7 +35,7 @@ public class SingletonModeTest {
 
     factory = new SingletonStorage();
 
-    factory.addDriverProvider(new DefaultDriverProvider(
+    factory.addLocalDriverProvider(new LocalDriverProvider.Default(
         fakeCapabilities, FakeWebDriver.class.getName()));
   }
 

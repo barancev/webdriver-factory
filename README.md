@@ -14,12 +14,7 @@ To use this library in a maven project you have to add these dependencies:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-java</artifactId>
-    <version>2.53.0</version>
-</dependency>
-<dependency>
-    <groupId>org.seleniumhq.selenium</groupId>
-    <artifactId>selenium-server</artifactId>
-    <version>2.53.0</version>
+    <version>2.53.1</version>
 </dependency>
 ```
 

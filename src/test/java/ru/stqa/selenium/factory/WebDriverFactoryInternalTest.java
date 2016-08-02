@@ -22,7 +22,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.server.DefaultDriverProvider;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,7 +39,7 @@ public class WebDriverFactoryInternalTest {
 
     factory = new SingletonStorage();
 
-    factory.addDriverProvider(new DefaultDriverProvider(
+    factory.addLocalDriverProvider(new LocalDriverProvider.Default(
         fakeCapabilities, FakeWebDriver.class.getName()));
   }
 
@@ -68,6 +67,8 @@ public class WebDriverFactoryInternalTest {
   public void throwsOnAttemptToInstantiateADriverByBadClassName() {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setBrowserName("FAKE-2");
+    factory.addLocalDriverProvider(new LocalDriverProvider.Default(
+        capabilities, "BadClassName"));
 
     try {
       WebDriver driver = factory.getDriver(capabilities);
@@ -90,8 +91,8 @@ public class WebDriverFactoryInternalTest {
 
   @Test
   public void testCanOverrideExistingDriverProvider() {
-    factory.addDriverProvider(
-        new DefaultDriverProvider(DesiredCapabilities.firefox(),
+    factory.addLocalDriverProvider(
+        new LocalDriverProvider.Default(DesiredCapabilities.firefox(),
             FakeWebDriver.class.getName()));
 
     WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
@@ -104,9 +105,9 @@ public class WebDriverFactoryInternalTest {
 
   @Test
   public void testCanHandleAlertsOnDriverAvailabilityCheck() {
-    factory.addDriverProvider(
-            new DefaultDriverProvider(DesiredCapabilities.firefox(),
-                    FakeAlertiveWebDriver.class.getName()));
+    factory.addLocalDriverProvider(
+        new LocalDriverProvider.Default(DesiredCapabilities.firefox(),
+            FakeAlertiveWebDriver.class.getName()));
 
     WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
     assertThat(driver, instanceOf(FakeAlertiveWebDriver.class));

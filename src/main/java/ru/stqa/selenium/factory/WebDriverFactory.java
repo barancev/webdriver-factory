@@ -2,7 +2,6 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.server.DriverProvider;
 
 public class WebDriverFactory {
 
@@ -32,8 +31,8 @@ public class WebDriverFactory {
     }
   }
 
-  public static void addDriverProvider (DriverProvider provider) {
-    factoryInternal.addDriverProvider(provider);
+  public static void addLocalDriverProvider (LocalDriverProvider provider) {
+    factoryInternal.addLocalDriverProvider(provider);
   }
 
   public static void addRemoteDriverProvider (RemoteDriverProvider provider) {
