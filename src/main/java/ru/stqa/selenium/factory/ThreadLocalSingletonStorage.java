@@ -51,6 +51,7 @@ public class ThreadLocalSingletonStorage extends WebDriverFactoryInternal {
         } else {
           // Check the browser is alive
           if (! alivenessChecker.isAlive(tlDriver.get())) {
+            dismissDriver(tlDriver.get());
             createNewDriver(capabilities, hub);
           }
         }
