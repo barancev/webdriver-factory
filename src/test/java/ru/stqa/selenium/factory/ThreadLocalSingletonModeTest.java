@@ -100,6 +100,9 @@ public class ThreadLocalSingletonModeTest {
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertFalse(isActive(driver));
+
+    factory.dismissDriver(driver2);
+    assertTrue(factory.isEmpty());
   }
 
   @Test(expected = Error.class)
