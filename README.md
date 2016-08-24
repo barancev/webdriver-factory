@@ -9,7 +9,7 @@ To use this library in a maven project you have to add these dependencies:
 <dependency>
     <groupId>ru.stqa.selenium</groupId>
     <artifactId>webdriver-factory</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
