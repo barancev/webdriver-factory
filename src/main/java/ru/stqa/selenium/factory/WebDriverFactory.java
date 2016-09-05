@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Alexei Barantsev
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
@@ -5,68 +21,68 @@ import org.openqa.selenium.WebDriver;
 
 public class WebDriverFactory {
 
-  private static WebDriverFactoryInternal factoryInternal = new ThreadLocalSingletonStorage();
+  private static WebDriverPool pool = WebDriverPool.DEFAULT;
 
   public static void setMode(WebDriverFactoryMode newMode) {
-    if (! factoryInternal.isEmpty()) {
+    if (! pool.isEmpty()) {
       throw new Error("Mode can't be changed because there are active WebDriver instances");
     }
-    factoryInternal = createFactoryInternal(newMode);
+    pool = createFactoryInternal(newMode);
   }
 
   public static void setDriverAlivenessChecker(DriverAlivenessChecker alivenessChecker) {
-    factoryInternal.setDriverAlivenessChecker(alivenessChecker);
+    pool.setDriverAlivenessChecker(alivenessChecker);
   }
 
-  private static WebDriverFactoryInternal createFactoryInternal(WebDriverFactoryMode mode) {
+  private static WebDriverPool createFactoryInternal(WebDriverFactoryMode mode) {
     switch (mode) {
       case SINGLETON:
-        return new SingletonStorage();
+        return new SingleWebDriverPool();
       case THREADLOCAL_SINGLETON:
-        return new ThreadLocalSingletonStorage();
+        return new ThreadLocalSingleWebDriverPool();
       case UNRESTRICTED:
-        return new UnrestrictedStorage();
+        return new LooseWebDriverPool();
       default:
         throw new Error("Unsupported browser factory mode: " + mode);
     }
   }
 
   public static void addLocalDriverProvider (LocalDriverProvider provider) {
-    factoryInternal.addLocalDriverProvider(provider);
+    pool.addLocalDriverProvider(provider);
   }
 
   public static void addRemoteDriverProvider (RemoteDriverProvider provider) {
-    factoryInternal.addRemoteDriverProvider(provider);
+    pool.addRemoteDriverProvider(provider);
   }
 
   public static void setDefaultHub(String defaultHub) {
-    factoryInternal.setDefaultHub(defaultHub);
+    pool.setDefaultHub(defaultHub);
   }
 
   public static WebDriver getDriver(String hub, Capabilities capabilities) {
-    return factoryInternal.getDriver(hub, capabilities);
+    return pool.getDriver(hub, capabilities);
   }
 
   public static WebDriver getDriver(Capabilities capabilities) {
-    return factoryInternal.getDriver(capabilities);
+    return pool.getDriver(capabilities);
   }
 
   public static void dismissDriver(WebDriver driver) {
-    factoryInternal.dismissDriver(driver);
+    pool.dismissDriver(driver);
   }
 
   public static void dismissAll() {
-    factoryInternal.dismissAll();
+    pool.dismissAll();
   }
 
   public static boolean isEmpty() {
-    return factoryInternal.isEmpty();
+    return pool.isEmpty();
   }
 
   static {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       public void run() {
-        factoryInternal.dismissAll();
+        pool.dismissAll();
       }
     });
   }

@@ -24,12 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
-public abstract class WebDriverFactoryInternal {
-
-  public abstract WebDriver getDriver(String hub, Capabilities capabilities);
-  public abstract void dismissDriver(WebDriver driver);
-  public abstract void dismissAll();
-  public abstract boolean isEmpty();
+public abstract class AbstractWebDriverPool implements WebDriverPool {
 
   private String defaultHub = null;
   protected DriverAlivenessChecker alivenessChecker = new DefaultDriverAlivenessChecker();
@@ -67,11 +62,11 @@ public abstract class WebDriverFactoryInternal {
     }
   }
 
-  void addLocalDriverProvider(LocalDriverProvider provider) {
+  public void addLocalDriverProvider(LocalDriverProvider provider) {
     localDriverProviders.add(0, provider);
   }
 
-  void addRemoteDriverProvider(RemoteDriverProvider provider) {
+  public void addRemoteDriverProvider(RemoteDriverProvider provider) {
     remoteDriverProviders.add(0, provider);
   }
 

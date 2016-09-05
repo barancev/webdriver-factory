@@ -27,9 +27,9 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-public class WebDriverFactoryInternalTest {
+public class AbstractWebDriverPoolTest {
 
-  private WebDriverFactoryInternal factory;
+  private AbstractWebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
   @Before
@@ -37,7 +37,7 @@ public class WebDriverFactoryInternalTest {
     fakeCapabilities = new DesiredCapabilities();
     fakeCapabilities.setBrowserName("FAKE");
 
-    factory = new SingletonStorage();
+    factory = new SingleWebDriverPool();
 
     factory.addLocalDriverProvider(new LocalDriverProvider.Default(
         fakeCapabilities, FakeWebDriver.class.getName()));

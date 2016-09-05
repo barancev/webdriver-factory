@@ -17,10 +17,9 @@
 package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 
-public class SingletonStorage extends WebDriverFactoryInternal {
+public class SingleWebDriverPool extends AbstractWebDriverPool {
 
   private String key;
   private WebDriver driver;

@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 public class SingletonModeTest {
 
-  private WebDriverFactoryInternal factory;
+  private AbstractWebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
   @Before
@@ -33,7 +33,7 @@ public class SingletonModeTest {
     fakeCapabilities = new DesiredCapabilities();
     fakeCapabilities.setBrowserName("FAKE");
 
-    factory = new SingletonStorage();
+    factory = new SingleWebDriverPool();
 
     factory.addLocalDriverProvider(new LocalDriverProvider.Default(
         fakeCapabilities, FakeWebDriver.class.getName()));

@@ -17,14 +17,13 @@
 package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class ThreadLocalSingletonStorage extends WebDriverFactoryInternal {
+public class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool {
 
   private ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 

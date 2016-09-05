@@ -22,7 +22,7 @@ import org.openqa.selenium.WebDriver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnrestrictedStorage extends WebDriverFactoryInternal {
+public class LooseWebDriverPool extends AbstractWebDriverPool {
 
   private List<WebDriver> drivers = new ArrayList<WebDriver>();
 

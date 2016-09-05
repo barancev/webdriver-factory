@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 public class UnrestrictedModeTest {
 
-  private WebDriverFactoryInternal factory;
+  private AbstractWebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
   @Before
@@ -33,7 +33,7 @@ public class UnrestrictedModeTest {
     fakeCapabilities = new DesiredCapabilities();
     fakeCapabilities.setBrowserName("FAKE");
 
-    factory = new UnrestrictedStorage();
+    factory = new LooseWebDriverPool();
 
     factory.addLocalDriverProvider(new LocalDriverProvider.Default(
         fakeCapabilities, FakeWebDriver.class.getName()));
