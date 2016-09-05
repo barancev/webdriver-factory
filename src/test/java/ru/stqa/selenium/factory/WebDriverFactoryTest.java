@@ -36,7 +36,7 @@ public class WebDriverFactoryTest {
     fakeCapabilities.setBrowserName("FAKE");
 
     WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
-    WebDriverFactory.addLocalDriverProvider(new LocalDriverProvider.Default(
+    WebDriverFactory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
         fakeCapabilities, FakeWebDriver.class.getName()));
   }
 

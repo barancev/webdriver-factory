@@ -39,7 +39,7 @@ public class AbstractWebDriverPoolTest {
 
     factory = new SingleWebDriverPool();
 
-    factory.addLocalDriverProvider(new LocalDriverProvider.Default(
+    factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
         fakeCapabilities, FakeWebDriver.class.getName()));
   }
 
@@ -67,7 +67,7 @@ public class AbstractWebDriverPoolTest {
   public void throwsOnAttemptToInstantiateADriverByBadClassName() {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setBrowserName("FAKE-2");
-    factory.addLocalDriverProvider(new LocalDriverProvider.Default(
+    factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
         capabilities, "BadClassName"));
 
     try {
@@ -92,7 +92,7 @@ public class AbstractWebDriverPoolTest {
   @Test
   public void testCanOverrideExistingDriverProvider() {
     factory.addLocalDriverProvider(
-        new LocalDriverProvider.Default(DesiredCapabilities.firefox(),
+        new ReflectionBasedLocalDriverProvider(DesiredCapabilities.firefox(),
             FakeWebDriver.class.getName()));
 
     WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
@@ -106,7 +106,7 @@ public class AbstractWebDriverPoolTest {
   @Test
   public void testCanHandleAlertsOnDriverAvailabilityCheck() {
     factory.addLocalDriverProvider(
-        new LocalDriverProvider.Default(DesiredCapabilities.firefox(),
+        new ReflectionBasedLocalDriverProvider(DesiredCapabilities.firefox(),
             FakeAlertiveWebDriver.class.getName()));
 
     WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());

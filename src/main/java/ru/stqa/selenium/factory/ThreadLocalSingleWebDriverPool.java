@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool {
+public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool {
 
   private ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 

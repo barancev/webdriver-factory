@@ -38,7 +38,7 @@ public class ThreadLocalSingletonModeTest {
 
     factory = new ThreadLocalSingleWebDriverPool();
 
-    factory.addLocalDriverProvider(new LocalDriverProvider.Default(
+    factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
         fakeCapabilities, FakeWebDriver.class.getName()));
   }
 

@@ -31,23 +31,23 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
 
   private List<LocalDriverProvider> localDriverProviders = new ArrayList<LocalDriverProvider>();
   {
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver"));
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver"));
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver"));
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.edge(), "org.openqa.selenium.edge.EdgeDriver"));
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.operaBlink(), "org.openqa.selenium.opera.OperaDriver"));
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver"));
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver"));
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver"));
-    localDriverProviders.add(new LocalDriverProvider.Default(
+    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver"));
     for (LocalDriverProvider provider : ServiceLoader.load(LocalDriverProvider.class)) {
       localDriverProviders.add(provider);
@@ -56,7 +56,7 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
 
   private List<RemoteDriverProvider> remoteDriverProviders = new ArrayList<RemoteDriverProvider>();
   {
-    remoteDriverProviders.add(new RemoteDriverProvider.Default());
+    remoteDriverProviders.add(new ReflectionBasedRemoteDriverProvider());
     for (RemoteDriverProvider provider : ServiceLoader.load(RemoteDriverProvider.class)) {
       remoteDriverProviders.add(provider);
     }

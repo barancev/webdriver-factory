@@ -35,7 +35,7 @@ public class SingletonModeTest {
 
     factory = new SingleWebDriverPool();
 
-    factory.addLocalDriverProvider(new LocalDriverProvider.Default(
+    factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
         fakeCapabilities, FakeWebDriver.class.getName()));
   }
 

@@ -35,7 +35,7 @@ public class UnrestrictedModeTest {
 
     factory = new LooseWebDriverPool();
 
-    factory.addLocalDriverProvider(new LocalDriverProvider.Default(
+    factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
         fakeCapabilities, FakeWebDriver.class.getName()));
   }
 
