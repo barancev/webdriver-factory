@@ -9,7 +9,7 @@ To use this library in a maven project you have to add these dependencies:
 <dependency>
     <groupId>ru.stqa.selenium</groupId>
     <artifactId>webdriver-factory</artifactId>
-    <version>2.1</version>
+    <version>3.0</version>
 </dependency>
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
@@ -18,14 +18,16 @@ To use this library in a maven project you have to add these dependencies:
 </dependency>
 ```
 
-The library implements [Object Pool design pattern](http://sourcemaking.com/design_patterns/object_pool), but for historical reason it is called "a factory". The instances created by the factory are called "managed instances".
+The library implements [Object Pool design pattern](http://sourcemaking.com/design_patterns/object_pool), but for a historical reason it is called "factory".
+
+The instances created by the pool are called "managed instances".
 
 The library provides three ways to manage instances:
-* `SingleWebDriverPool` allows a single managed instance of WebDriver to exist in any given moment;
-* `ThreadLocalSingleWebDriverPool` allows a single managed instance of WebDriver to exist for each thread;
+* `SingleWebDriverPool` allows a single managed instance of WebDriver to exist in any given moment,
+* `ThreadLocalSingleWebDriverPool` allows a single managed instance of WebDriver to exist for each thread,
 * `LooseWebDriverPool` does not impose any restrictions and creates a new managed instance on each request.
 
-If you don't dislike global vars you can use `WebDriverPool.DEFAULT` that is an instance of `ThreadLocalSingleWebDriverPool`.
+You can use as many separate pools as you like, but there is also `WebDriverPool.DEFAULT` that is an instance of `ThreadLocalSingleWebDriverPool`.
 
 **1) The simplest use case**
 
