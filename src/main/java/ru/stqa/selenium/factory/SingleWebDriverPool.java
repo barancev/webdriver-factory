@@ -24,6 +24,14 @@ public final class SingleWebDriverPool extends AbstractWebDriverPool {
   private String key;
   private WebDriver driver;
 
+  public SingleWebDriverPool() {
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      public void run() {
+        SingleWebDriverPool.this.dismissAll();
+      }
+    });
+  }
+
   @Override
   public WebDriver getDriver(String hub, Capabilities capabilities) {
     String newKey = createKey(capabilities, hub);

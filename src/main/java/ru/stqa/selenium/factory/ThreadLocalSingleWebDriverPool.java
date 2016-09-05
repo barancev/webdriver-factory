@@ -29,6 +29,14 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
 
   private Map<WebDriver, String> driverToKeyMap = new HashMap<WebDriver, String>();
 
+  public ThreadLocalSingleWebDriverPool() {
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      public void run() {
+        ThreadLocalSingleWebDriverPool.this.dismissAll();
+      }
+    });
+  }
+
   @Override
   public WebDriver getDriver(String hub, Capabilities capabilities) {
     String newKey = createKey(capabilities, hub);

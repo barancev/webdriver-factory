@@ -19,6 +19,9 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * See documentation at https://github.com/barancev/webdriver-factory/
+ */
 public interface WebDriverPool {
   WebDriverPool DEFAULT = new ThreadLocalSingleWebDriverPool();
 

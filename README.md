@@ -1,4 +1,4 @@
-WebDriverFactory
+Web Driver Factory
 ====================
 
 This library provides an utility to manage WebDriver instances. It helps to create, reuse and dismiss WebDriver instances.
@@ -18,59 +18,61 @@ To use this library in a maven project you have to add these dependencies:
 </dependency>
 ```
 
-It is curious that the library implements [Object Pool design pattern](http://sourcemaking.com/design_patterns/object_pool), but for historical reason it is called "a factory". The instances created by the factory are called "managed instances".
+The library implements [Object Pool design pattern](http://sourcemaking.com/design_patterns/object_pool), but for historical reason it is called "a factory". The instances created by the factory are called "managed instances".
 
-The factory implements three main strategies (or modes) to manage instances:
-* `SINGLETON` mode allows a single managed instance of WebDriver to exist in any given moment;
-* `THREADLOCAL_SINGLETON` mode (the default one since version 1.1.42) allows a single managed instance of WebDriver to exist for each thread;
-* `UNRESTRICTED` mode does not impose any restrictions and creates a new managed instance on each request.
+The library provides three ways to manage instances:
+* `SingleWebDriverPool` allows a single managed instance of WebDriver to exist in any given moment;
+* `ThreadLocalSingleWebDriverPool` allows a single managed instance of WebDriver to exist for each thread;
+* `LooseWebDriverPool` does not impose any restrictions and creates a new managed instance on each request.
+
+If you don't dislike global vars you can use `WebDriverPool.DEFAULT` that is an instance of `ThreadLocalSingleWebDriverPool`.
 
 **1) The simplest use case**
 
 ```java
 Capabilities firefox = DesiredCapabilities.firefox();
 // create a new managed instance
-WebDriver driver = WebDriverFactory.getDriver(firefox);
+WebDriver driver = WebDriverPool.DEFAULT.getDriver(firefox);
 // do something with the driver
 driver.get("http://seleniumhq.org/");
 // destroy the instance (calls driver.quit() implicitly)
-WebDriverFactory.dismissDriver(driver);
+WebDriverPool.DEFAULT.dismissDriver(driver);
 ```
 
-**2) If one requests a new driver with the same capabilities** the existing instance should be reused in `SINGLETON` and `THREADLOCAL_SINGLETON` modes:
+**2) If one requests a new driver with the same capabilities** the existing instance should be reused by `SingleWebDriverPool` and `ThreadLocalSingleWebDriverPool`:
 
 ```java
 Capabilities firefox = DesiredCapabilities.firefox();
 // create a new managed instance
-WebDriver driver = WebDriverFactory.getDriver(firefox);
+WebDriver driver = WebDriverPool.DEFAULT.getDriver(firefox);
 // do something with the driver
 driver.get("http://seleniumhq.org/");
 
 // obtain the same instance from the pool of the managed instances
-driver = WebDriverFactory.getDriver(firefox);
+driver = WebDriverPool.DEFAULT.getDriver(firefox);
 // do something with the driver
 driver.get("http://selenium2.ru/");
 
 // destroy the driver
-WebDriverFactory.dismissDriver(driver);
+WebDriverPool.DEFAULT.dismissDriver(driver);
 ```
 
-Additionaly, the factory checks availability of the browser (by default it checks that `driver.getWindowHandles().size() > 0`) before returning the instance to the client. If the browser is not available a new WebDriver instance should be created (and a new browser should be started) instead of the broken one.
+Additionally, the pool checks availability of the browser (by default it checks that `driver.getWindowHandles().size() > 0`) before returning the instance to the client. If the browser is not available the pool dismisses the "broken" driver and creates a new WebDriver instance as a replacement. 
 
 **3) If one requests a new driver with different capabilities** a new WebDriver instance should be created 
 
-What happens to the previous instances depends on the factory mode:
-* in `SINGLETON` mode the previous managed instance of the driver should be destroyed,
-* in `THREADLOCAL_SINGLETON` mode the previous managed instance created in the current thread should be destroyed, managed instances created in other threads should be kept untouched,
-* in `UNRESTRICTED` mode all running instances are kept untouched.
+What happens to the previous instances depends on the pool implementation:
+* `SingleWebDriverPool` destroys and dismisses the previous managed instance of the driver,
+* `ThreadLocalSingleWebDriverPool` destroys and dismisses the previous managed instance of the driver associated with the current thread; managed instances created in other threads are kept untouched,
+* `LooseWebDriverPool` does nothing to all the running instances.
 
-4) One should not care about destroying each single WebDriver instance in each single test case, they can be destroyed all at once in the end of the test suite:
+4) One can destroy all managed WebDriver instances in a pool at once:
 
 ```java
 @Test
 public void testSomething() {
   Capabilities firefox = DesiredCapabilities.firefox();
-  WebDriver driver = WebDriverFactory.getDriver(firefox);
+  WebDriver driver = WebDriverPool.DEFAULT.getDriver(firefox);
   // do something with the driver
   driver.get("http://seleniumhq.org/");
 }
@@ -78,23 +80,17 @@ public void testSomething() {
 @Test
 public void testSomethingElse() {
   Capabilities chrome = DesiredCapabilities.chrome();
-  WebDriver driver = WebDriverFactory.getDriver(chrome);
+  WebDriver driver = WebDriverPool.DEFAULT.getDriver(chrome);
   // do something with the driver
   driver.get("http://seleniumhq.org/");
 }
 
 @AfterSuite
 public void stopAllDrivers() {
-  WebDriverFactory.dismissAll();
+  WebDriverPool.DEFAULT.dismissAll();
 }
 ```
 
-(Ability to destroy all managed instances at once is probably the only usable feature of `UNRESTRICTED` mode)
-
-5) One can change the factory mode if there are no active managed instances.
-
-```java
-WebDriverFactory.setMode(WebDriverFactoryMode.SINGLETON);
-```
+(Ability to destroy all managed instances at once is probably the only usable feature of `LooseWebDriverPool`)
 
 There are [several samples](https://github.com/barancev/webdriver-factory-samples/tree/master/src/test/java/ru/stqa/selenium/factory/samples) that show how to use WebDriverFactory with test frameworks JUnit and TestNG.

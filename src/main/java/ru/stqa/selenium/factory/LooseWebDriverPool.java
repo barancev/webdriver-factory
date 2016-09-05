@@ -26,6 +26,14 @@ public final class LooseWebDriverPool extends AbstractWebDriverPool {
 
   private List<WebDriver> drivers = new ArrayList<WebDriver>();
 
+  public LooseWebDriverPool() {
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      public void run() {
+        LooseWebDriverPool.this.dismissAll();
+      }
+    });
+  }
+
   @Override
   public WebDriver getDriver(String hub, Capabilities capabilities) {
     WebDriver driver = newDriver(hub, capabilities);

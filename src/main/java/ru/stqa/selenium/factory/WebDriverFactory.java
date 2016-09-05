@@ -19,10 +19,15 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * @deprecated Use WebDriverPool.DEFAULT instead. See documentation at https://github.com/barancev/webdriver-factory/
+ */
+@Deprecated
 public class WebDriverFactory {
 
   private static WebDriverPool pool = WebDriverPool.DEFAULT;
 
+  @Deprecated
   public static void setMode(WebDriverFactoryMode newMode) {
     if (! pool.isEmpty()) {
       throw new Error("Mode can't be changed because there are active WebDriver instances");
@@ -59,32 +64,29 @@ public class WebDriverFactory {
     pool.setDefaultHub(defaultHub);
   }
 
+  @Deprecated
   public static WebDriver getDriver(String hub, Capabilities capabilities) {
     return pool.getDriver(hub, capabilities);
   }
 
+  @Deprecated
   public static WebDriver getDriver(Capabilities capabilities) {
     return pool.getDriver(capabilities);
   }
 
+  @Deprecated
   public static void dismissDriver(WebDriver driver) {
     pool.dismissDriver(driver);
   }
 
+  @Deprecated
   public static void dismissAll() {
     pool.dismissAll();
   }
 
+  @Deprecated
   public static boolean isEmpty() {
     return pool.isEmpty();
-  }
-
-  static {
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      public void run() {
-        pool.dismissAll();
-      }
-    });
   }
 
 }
