@@ -20,7 +20,8 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ServiceLoader;
 
 public abstract class WebDriverFactoryInternal {
@@ -33,7 +34,7 @@ public abstract class WebDriverFactoryInternal {
   private String defaultHub = null;
   protected DriverAlivenessChecker alivenessChecker = new DefaultDriverAlivenessChecker();
 
-  private LinkedList<LocalDriverProvider> localDriverProviders = new LinkedList<LocalDriverProvider>();
+  private List<LocalDriverProvider> localDriverProviders = new ArrayList<LocalDriverProvider>();
   {
     localDriverProviders.add(new LocalDriverProvider.Default(
       DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver"));
@@ -58,7 +59,7 @@ public abstract class WebDriverFactoryInternal {
     }
   }
 
-  private LinkedList<RemoteDriverProvider> remoteDriverProviders = new LinkedList<RemoteDriverProvider>();
+  private List<RemoteDriverProvider> remoteDriverProviders = new ArrayList<RemoteDriverProvider>();
   {
     remoteDriverProviders.add(new RemoteDriverProvider.Default());
     for (RemoteDriverProvider provider : ServiceLoader.load(RemoteDriverProvider.class)) {
@@ -67,11 +68,11 @@ public abstract class WebDriverFactoryInternal {
   }
 
   void addLocalDriverProvider(LocalDriverProvider provider) {
-    localDriverProviders.addFirst(provider);
+    localDriverProviders.add(0, provider);
   }
 
   void addRemoteDriverProvider(RemoteDriverProvider provider) {
-    remoteDriverProviders.addFirst(provider);
+    remoteDriverProviders.add(0, provider);
   }
 
   public void setDefaultHub(String defaultHub) {
