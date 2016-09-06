@@ -26,9 +26,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ThreadLocalSingletonModeTest {
+public class ThreadLocalSingleWebDriverPoolTest {
 
-  private AbstractWebDriverPool factory;
+  private WebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
   @Before

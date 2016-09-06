@@ -23,9 +23,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.junit.Assert.*;
 
-public class SingletonModeTest {
+public class LooseWebDriverPoolTest {
 
-  private AbstractWebDriverPool factory;
+  private WebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
   @Before
@@ -33,7 +33,7 @@ public class SingletonModeTest {
     fakeCapabilities = new DesiredCapabilities();
     fakeCapabilities.setBrowserName("FAKE");
 
-    factory = new SingleWebDriverPool();
+    factory = new LooseWebDriverPool();
 
     factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
         fakeCapabilities, FakeWebDriver.class.getName()));
@@ -66,17 +66,18 @@ public class SingletonModeTest {
   }
 
   @Test
-  public void testShouldReuseADriverWithSameCapabilities() {
+  public void testShouldCreateAnotherDriverWithSameCapabilities() {
     WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
 
     WebDriver driver2 = factory.getDriver(fakeCapabilities);
-    assertSame(driver2, driver);
+    assertNotSame(driver2, driver);
+    assertTrue(isActive(driver2));
     assertTrue(isActive(driver));
   }
 
   @Test
-  public void testShouldRecreateADriverWithDifferentCapabilities() {
+  public void testShouldCreateAnotherDriverWithDifferentCapabilities() {
     WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
 
@@ -84,7 +85,7 @@ public class SingletonModeTest {
     WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
-    assertFalse(isActive(driver));
+    assertTrue(isActive(driver));
   }
 
   @Test
