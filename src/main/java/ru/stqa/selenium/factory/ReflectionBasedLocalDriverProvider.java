@@ -77,6 +77,9 @@ public class ReflectionBasedLocalDriverProvider implements LocalDriverProvider {
   }
 
   private WebDriver callConstructor(Class<? extends WebDriver> from, Capabilities capabilities) {
+    if (from == null) {
+      return null;
+    }
     try {
       Constructor<? extends WebDriver> constructor = from.getConstructor(Capabilities.class);
       return constructor.newInstance(capabilities);

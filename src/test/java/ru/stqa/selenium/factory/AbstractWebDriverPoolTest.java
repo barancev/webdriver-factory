@@ -73,7 +73,7 @@ public class AbstractWebDriverPoolTest {
     try {
       WebDriver driver = factory.getDriver(capabilities);
       fail("Exception expected");
-    } catch (Exception expected) {
+    } catch (DriverCreationError expected) {
     }
 
     assertTrue(factory.isEmpty());
@@ -147,7 +147,7 @@ public class AbstractWebDriverPoolTest {
     try {
       WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
       fail("Exception expected");
-    } catch (Error ignored) {
+    } catch (DriverCreationError expected) {
     }
 
     assertTrue(factory.isEmpty());

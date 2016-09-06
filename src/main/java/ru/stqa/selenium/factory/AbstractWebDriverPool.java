@@ -95,7 +95,7 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
         return driver;
       }
     }
-    throw new Error("Can't find local driver provider for capabilities " + capabilities);
+    throw new DriverCreationError("Can't find local driver provider for capabilities " + capabilities);
   }
 
   private WebDriver createRemoteDriver(String hub, Capabilities capabilities) {
@@ -105,7 +105,7 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
         return driver;
       }
     }
-    throw new Error("Can't find remote driver provider for capabilities " + capabilities);
+    throw new DriverCreationError("Can't find remote driver provider for capabilities " + capabilities);
   }
 
   public void setDriverAlivenessChecker(DriverAlivenessChecker alivenessChecker) {
