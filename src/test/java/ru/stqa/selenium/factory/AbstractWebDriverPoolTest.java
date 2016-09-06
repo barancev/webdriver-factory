@@ -153,4 +153,19 @@ public class AbstractWebDriverPoolTest {
     assertTrue(factory.isEmpty());
   }
 
+  @Test
+  public void testCanSetCustomAlivenessChecker() {
+    factory.setDriverAlivenessChecker(new DriverAlivenessChecker() {
+      @Override
+      public boolean isAlive(WebDriver driver) {
+        return false;
+      }
+    });
+
+    WebDriver driver1 = factory.getDriver(fakeCapabilities);
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
+
+    assertNotSame(driver2, driver1);
+  }
+
 }
