@@ -25,7 +25,7 @@ The instances created by the pool and stored in the pool are called "managed ins
 The library provides three ways to manage instances:
 * `SingleWebDriverPool` allows a single managed instance of WebDriver to exist at any given moment,
 * `ThreadLocalSingleWebDriverPool` allows a single managed instance of WebDriver to exist for each thread,
-* `LooseWebDriverPool` does not impose any restrictions and creates a new managed instance on each request.
+* `LooseWebDriverPool` does not impose any restrictions, it creates a new managed instance on each request.
 
 You can use as many separate pools as you like, but there is also `WebDriverPool.DEFAULT` that is an instance of `ThreadLocalSingleWebDriverPool`.
 
