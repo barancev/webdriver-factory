@@ -20,10 +20,10 @@ To use this library in a maven project you have to add these dependencies:
 
 The library implements [Object Pool design pattern](http://sourcemaking.com/design_patterns/object_pool), but for a historical reason it is called "factory".
 
-The instances created by the pool are called "managed instances".
+The instances created by the pool and stored in the pool are called "managed instances".
 
 The library provides three ways to manage instances:
-* `SingleWebDriverPool` allows a single managed instance of WebDriver to exist in any given moment,
+* `SingleWebDriverPool` allows a single managed instance of WebDriver to exist at any given moment,
 * `ThreadLocalSingleWebDriverPool` allows a single managed instance of WebDriver to exist for each thread,
 * `LooseWebDriverPool` does not impose any restrictions and creates a new managed instance on each request.
 
