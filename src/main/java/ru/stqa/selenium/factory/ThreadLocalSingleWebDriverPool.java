@@ -18,16 +18,17 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool {
 
   private ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 
-  private Map<WebDriver, String> driverToKeyMap = new HashMap<WebDriver, String>();
+  private Map<WebDriver, String> driverToKeyMap = new ConcurrentHashMap<WebDriver, String>();
 
   public ThreadLocalSingleWebDriverPool() {
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -39,30 +40,24 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
 
   @Override
   public WebDriver getDriver(String hub, Capabilities capabilities) {
-    String newKey = createKey(capabilities, hub);
     if (tlDriver.get() == null) {
+      return createNewDriver(capabilities, hub);
+    }
+    String key = driverToKeyMap.get(tlDriver.get());
+    if (key == null) {
+      // The driver was dismissed in a wrong way
+      return createNewDriver(capabilities, hub);
+    }
+    String newKey = createKey(capabilities, hub);
+    if (!newKey.equals(key)) {
+      // A different flavour of WebDriver is required
+      dismissDriver(tlDriver.get());
+      return createNewDriver(capabilities, hub);
+    }
+    // Check the browser is alive
+    if (!alivenessChecker.isAlive(tlDriver.get())) {
+      dismissDriver(tlDriver.get());
       createNewDriver(capabilities, hub);
-
-    } else {
-      String key = driverToKeyMap.get(tlDriver.get());
-      if (key == null) {
-        // The driver was dismissed
-        createNewDriver(capabilities, hub);
-
-      } else {
-        if (!newKey.equals(key)) {
-          // A different flavour of WebDriver is required
-          dismissDriver(tlDriver.get());
-          createNewDriver(capabilities, hub);
-
-        } else {
-          // Check the browser is alive
-          if (! alivenessChecker.isAlive(tlDriver.get())) {
-            dismissDriver(tlDriver.get());
-            createNewDriver(capabilities, hub);
-          }
-        }
-      }
     }
     return tlDriver.get();
   }
@@ -75,16 +70,24 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
     if (driver != tlDriver.get()) {
       throw new Error("The driver does not belong to the current thread: " + driver);
     }
-    driver.quit();
-    driverToKeyMap.remove(driver);
-    tlDriver.remove();
+    try {
+      driver.quit();
+    } catch (UnreachableBrowserException ignore) {
+    } finally {
+      driverToKeyMap.remove(driver);
+      tlDriver.remove();
+    }
   }
 
   @Override
   public void dismissAll() {
     for (WebDriver driver : new HashSet<WebDriver>(driverToKeyMap.keySet())) {
-      driver.quit();
-      driverToKeyMap.remove(driver);
+      try {
+        driver.quit();
+      } catch (UnreachableBrowserException ignore) {
+      } finally {
+        driverToKeyMap.remove(driver);
+      }
     }
   }
 
@@ -93,10 +96,11 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
     return driverToKeyMap.isEmpty();
   }
 
-  private void createNewDriver(Capabilities capabilities, String hub) {
+  private WebDriver createNewDriver(Capabilities capabilities, String hub) {
     String newKey = createKey(capabilities, hub);
     WebDriver driver = newDriver(hub, capabilities);
     driverToKeyMap.put(driver, newKey);
     tlDriver.set(driver);
+    return driver;
   }
 }
