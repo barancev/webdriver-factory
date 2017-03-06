@@ -1,3 +1,20 @@
+3.1
+=======================
+
+* Updating dependencies to the latest versions
+* Updating source and target compilation level to Java 8
+
+3.0
+=======================
+
+* WebDriverFactory -> WebDriverPool
+* More object-oriented design instead of static methods
+
+2.1
+=======================
+
+* Breaking dependency on selenium server
+
 2.0
 =======================
 
