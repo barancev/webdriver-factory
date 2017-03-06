@@ -18,7 +18,6 @@ package ru.stqa.selenium.factory;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -123,12 +122,7 @@ public class AbstractWebDriverPoolTest {
 
   @Test
   public void testCanInstantiateARemoteDriver() {
-    factory.addRemoteDriverProvider(new RemoteDriverProvider() {
-      @Override
-      public WebDriver createDriver(String hub, Capabilities capabilities) {
-        return new FakeWebDriver(capabilities);
-      }
-    });
+    factory.addRemoteDriverProvider((hub, capabilities) -> new FakeWebDriver(capabilities));
 
     factory.setDefaultHub("some url");
 
@@ -155,12 +149,7 @@ public class AbstractWebDriverPoolTest {
 
   @Test
   public void testCanSetCustomAlivenessChecker() {
-    factory.setDriverAlivenessChecker(new DriverAlivenessChecker() {
-      @Override
-      public boolean isAlive(WebDriver driver) {
-        return false;
-      }
-    });
+    factory.setDriverAlivenessChecker(driver -> false);
 
     WebDriver driver1 = factory.getDriver(fakeCapabilities);
     WebDriver driver2 = factory.getDriver(fakeCapabilities);

@@ -77,7 +77,7 @@ public class FakeWebDriver implements WebDriver {
   @Override
   public Set<String> getWindowHandles() {
     if (isActive) {
-      return new HashSet<String>(Arrays.asList("12345"));
+      return new HashSet<>(Arrays.asList("12345"));
     } else {
       throw new WebDriverException("closed");
     }

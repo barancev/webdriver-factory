@@ -50,10 +50,7 @@ public class ReflectionBasedLocalDriverProvider implements LocalDriverProvider {
     }
     try {
       return Class.forName(driverClassName).asSubclass(WebDriver.class);
-    } catch (ClassNotFoundException e) {
-      LOG.log(Level.INFO, "Driver class not found: " + driverClassName);
-      return null;
-    } catch (NoClassDefFoundError e) {
+    } catch (ClassNotFoundException | NoClassDefFoundError e) {
       LOG.log(Level.INFO, "Driver class not found: " + driverClassName);
       return null;
     } catch (UnsupportedClassVersionError e) {
@@ -86,16 +83,10 @@ public class ReflectionBasedLocalDriverProvider implements LocalDriverProvider {
     } catch (NoSuchMethodException e) {
       try {
         return from.newInstance();
-      } catch (InstantiationException e1) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e1) {
+      } catch (InstantiationException | IllegalAccessException e1) {
         throw new WebDriverException(e);
       }
-    } catch (InvocationTargetException e) {
-      throw new WebDriverException(e);
-    } catch (InstantiationException e) {
-      throw new WebDriverException(e);
-    } catch (IllegalAccessException e) {
+    } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
       throw new WebDriverException(e);
     }
   }

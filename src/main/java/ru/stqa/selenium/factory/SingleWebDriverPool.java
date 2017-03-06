@@ -25,11 +25,7 @@ public final class SingleWebDriverPool extends AbstractWebDriverPool {
   private WebDriver driver;
 
   public SingleWebDriverPool() {
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      public void run() {
-        SingleWebDriverPool.this.dismissAll();
-      }
-    });
+    Runtime.getRuntime().addShutdownHook(new Thread(SingleWebDriverPool.this::dismissAll));
   }
 
   @Override

@@ -29,7 +29,7 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
   private String defaultHub = null;
   protected DriverAlivenessChecker alivenessChecker = new DefaultDriverAlivenessChecker();
 
-  private List<LocalDriverProvider> localDriverProviders = new ArrayList<LocalDriverProvider>();
+  private List<LocalDriverProvider> localDriverProviders = new ArrayList<>();
   {
     localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
       DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver"));
@@ -54,7 +54,7 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
     }
   }
 
-  private List<RemoteDriverProvider> remoteDriverProviders = new ArrayList<RemoteDriverProvider>();
+  private List<RemoteDriverProvider> remoteDriverProviders = new ArrayList<>();
   {
     remoteDriverProviders.add(new ReflectionBasedRemoteDriverProvider());
     for (RemoteDriverProvider provider : ServiceLoader.load(RemoteDriverProvider.class)) {

@@ -25,16 +25,12 @@ import java.util.Map;
 
 public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool {
 
-  private ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
+  private ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
 
-  private Map<WebDriver, String> driverToKeyMap = new HashMap<WebDriver, String>();
+  private Map<WebDriver, String> driverToKeyMap = new HashMap<>();
 
   public ThreadLocalSingleWebDriverPool() {
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      public void run() {
-        ThreadLocalSingleWebDriverPool.this.dismissAll();
-      }
-    });
+    Runtime.getRuntime().addShutdownHook(new Thread(ThreadLocalSingleWebDriverPool.this::dismissAll));
   }
 
   @Override
@@ -82,7 +78,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
 
   @Override
   public void dismissAll() {
-    for (WebDriver driver : new HashSet<WebDriver>(driverToKeyMap.keySet())) {
+    for (WebDriver driver : new HashSet<>(driverToKeyMap.keySet())) {
       driver.quit();
       driverToKeyMap.remove(driver);
     }

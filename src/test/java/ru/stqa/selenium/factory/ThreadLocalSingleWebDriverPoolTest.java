@@ -120,13 +120,10 @@ public class ThreadLocalSingleWebDriverPoolTest {
   public void testShouldCreateADriverForEachThread() throws InterruptedException {
     final WebDriver driver = factory.getDriver(fakeCapabilities);
 
-    Thread t = new Thread() {
-      @Override
-      public void run() {
-        WebDriver driver2 = factory.getDriver(fakeCapabilities);
-        assertNotSame(driver2, driver);
-      }
-    };
+    Thread t = new Thread(() -> {
+      WebDriver driver2 = factory.getDriver(fakeCapabilities);
+      assertNotSame(driver2, driver);
+    });
     t.start();
     t.join();
   }
@@ -134,20 +131,10 @@ public class ThreadLocalSingleWebDriverPoolTest {
   @Test
   public void testShouldNotDismissADriverFromAnotherThread() throws InterruptedException {
     final WebDriver driver = factory.getDriver(fakeCapabilities);
-    final List<Throwable> thrown = new ArrayList<Throwable>();
+    final List<Throwable> thrown = new ArrayList<>();
 
-    Thread t = new Thread() {
-      @Override
-      public void run() {
-        factory.dismissDriver(driver);
-      }
-    };
-    t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      @Override
-      public void uncaughtException(Thread t, Throwable e) {
-        thrown.add(e);
-      }
-    });
+    Thread t = new Thread(() -> factory.dismissDriver(driver));
+    t.setUncaughtExceptionHandler((t1, e) -> thrown.add(e));
     t.start();
 
     t.join();
@@ -161,13 +148,10 @@ public class ThreadLocalSingleWebDriverPoolTest {
   public void testDismissAllCanDismissDriversFromAllThreads() {
     final WebDriver driver = factory.getDriver(fakeCapabilities);
 
-    new Thread() {
-      @Override
-      public void run() {
-        WebDriver driver2 = factory.getDriver(fakeCapabilities);
-        assertNotSame(driver2, driver);
-      }
-    }.start();
+    new Thread(() -> {
+      WebDriver driver2 = factory.getDriver(fakeCapabilities);
+      assertNotSame(driver2, driver);
+    }).start();
 
     factory.dismissAll();
     assertFalse(isActive(driver));

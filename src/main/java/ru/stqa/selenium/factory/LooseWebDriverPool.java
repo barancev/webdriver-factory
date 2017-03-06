@@ -24,14 +24,10 @@ import java.util.List;
 
 public final class LooseWebDriverPool extends AbstractWebDriverPool {
 
-  private List<WebDriver> drivers = new ArrayList<WebDriver>();
+  private List<WebDriver> drivers = new ArrayList<>();
 
   public LooseWebDriverPool() {
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      public void run() {
-        LooseWebDriverPool.this.dismissAll();
-      }
-    });
+    Runtime.getRuntime().addShutdownHook(new Thread(LooseWebDriverPool.this::dismissAll));
   }
 
   @Override
@@ -52,7 +48,7 @@ public final class LooseWebDriverPool extends AbstractWebDriverPool {
 
   @Override
   public void dismissAll() {
-    for (WebDriver driver : new ArrayList<WebDriver>(drivers)) {
+    for (WebDriver driver : new ArrayList<>(drivers)) {
       driver.quit();
       drivers.remove(driver);
     }
