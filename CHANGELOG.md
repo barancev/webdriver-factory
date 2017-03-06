@@ -1,8 +1,10 @@
-3.1
+4.0
 =======================
 
-* Updating dependencies to the latest versions
+* Java 8 is the requirement now
 * Updating source and target compilation level to Java 8
+* Updating dependencies to the latest versions
+* Deleting deprecated WebDriverFactory
 
 3.0
 =======================
@@ -13,7 +15,7 @@
 2.1
 =======================
 
-* Breaking dependency on selenium server
+* Breaking dependency on selenium-server
 
 2.0
 =======================
