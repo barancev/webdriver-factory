@@ -7,6 +7,7 @@
 * Deleting deprecated WebDriverFactory class
 * Deleting WebDriverPool.setDefaultHub, one should call two-argument getDriver to obtain a remote driver
 * Changing hub address type from String to URL to fail-fast malformed URLs
+* Adding convenient getDriver methods that accept browser name instead of capabilities
 
 3.0
 =======================

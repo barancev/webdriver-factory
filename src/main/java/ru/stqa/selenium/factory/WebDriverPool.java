@@ -18,6 +18,7 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,9 +32,20 @@ public interface WebDriverPool {
 
   WebDriverPool DEFAULT = new ThreadLocalSingleWebDriverPool();
 
+  default WebDriver getDriver(String browser) {
+    return getDriver((URL) null, browser);
+  }
+
+  default WebDriver getDriver(URL hub, String browser) {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setBrowserName(browser);
+    return getDriver(capabilities);
+  }
+
   default WebDriver getDriver(Capabilities capabilities) {
     return getDriver((URL) null, capabilities);
   }
+
   WebDriver getDriver(URL hub, Capabilities capabilities);
 
   @Deprecated
