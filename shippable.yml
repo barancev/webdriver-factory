@@ -3,5 +3,9 @@ language: java
 jdk:
   - oraclejdk8
 
+before_script:
+  - mkdir -p shippable/testresults
+
 after_success:
-    - mvn test
+  - mvn test
+  - cp -r target/surefire-reports/* shippable/testresults/
