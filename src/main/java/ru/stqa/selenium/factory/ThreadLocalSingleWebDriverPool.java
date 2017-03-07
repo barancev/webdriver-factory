@@ -19,15 +19,15 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool {
 
   private ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
 
-  private Map<WebDriver, String> driverToKeyMap = new HashMap<>();
+  private Map<WebDriver, String> driverToKeyMap = Collections.synchronizedMap(new HashMap<>());
+  private Map<WebDriver, Thread> driverToThread = Collections.synchronizedMap(new HashMap<>());
 
   public ThreadLocalSingleWebDriverPool() {
     Runtime.getRuntime().addShutdownHook(new Thread(ThreadLocalSingleWebDriverPool.this::dismissAll));
@@ -35,6 +35,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
 
   @Override
   public WebDriver getDriver(String hub, Capabilities capabilities) {
+    dismissDriversInFinishedThreads();
     String newKey = createKey(capabilities, hub);
     if (tlDriver.get() == null) {
       createNewDriver(capabilities, hub);
@@ -65,6 +66,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
 
   @Override
   public void dismissDriver(WebDriver driver) {
+    dismissDriversInFinishedThreads();
     if (driverToKeyMap.get(driver) == null) {
       throw new Error("The driver is not owned by the factory: " + driver);
     }
@@ -73,7 +75,20 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
     }
     driver.quit();
     driverToKeyMap.remove(driver);
+    driverToThread.remove(driver);
     tlDriver.remove();
+  }
+
+  private void dismissDriversInFinishedThreads() {
+    List<WebDriver> stale = driverToThread.entrySet().stream()
+      .filter((entry) -> !entry.getValue().isAlive())
+      .map(Map.Entry::getKey).collect(Collectors.toList());
+
+    for (WebDriver driver : stale) {
+      driver.quit();
+      driverToKeyMap.remove(driver);
+      driverToThread.remove(driver);
+    }
   }
 
   @Override
@@ -81,6 +96,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
     for (WebDriver driver : new HashSet<>(driverToKeyMap.keySet())) {
       driver.quit();
       driverToKeyMap.remove(driver);
+      driverToThread.remove(driver);
     }
   }
 
@@ -93,6 +109,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
     String newKey = createKey(capabilities, hub);
     WebDriver driver = newDriver(hub, capabilities);
     driverToKeyMap.put(driver, newKey);
+    driverToThread.put(driver, Thread.currentThread());
     tlDriver.set(driver);
   }
 }

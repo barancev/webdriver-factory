@@ -125,7 +125,36 @@ public class ThreadLocalSingleWebDriverPoolTest {
       assertNotSame(driver2, driver);
     });
     t.start();
+
+    assertTrue(isActive(driver));
+
     t.join();
+  }
+
+  @Test
+  public void testShouldAutoDismissTheDriverIfAThreadIsOver() throws InterruptedException {
+    final WebDriver driver = factory.getDriver(fakeCapabilities);
+
+    Thread t = new Thread(() -> {
+      WebDriver driver2 = factory.getDriver(fakeCapabilities);
+      assertNotSame(driver2, driver);
+    });
+    t.start();
+
+    assertTrue(isActive(driver));
+    assertFalse(factory.isEmpty());
+
+    factory.dismissDriver(driver);
+    assertFalse(isActive(driver));
+
+    t.join();
+    // the thread is over, but the driver is not auto dismissed yet
+    assertFalse(factory.isEmpty());
+
+    // this action should dismiss the driver in the complete thread
+    WebDriver driver3 = factory.getDriver(fakeCapabilities);
+    factory.dismissDriver(driver3);
+    assertTrue(factory.isEmpty());
   }
 
   @Test
@@ -136,7 +165,6 @@ public class ThreadLocalSingleWebDriverPoolTest {
     Thread t = new Thread(() -> factory.dismissDriver(driver));
     t.setUncaughtExceptionHandler((t1, e) -> thrown.add(e));
     t.start();
-
     t.join();
 
     assertTrue(isActive(driver));
