@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -28,7 +29,7 @@ import static org.junit.Assert.*;
 
 public class AbstractWebDriverPoolTest {
 
-  private AbstractWebDriverPool factory;
+  private WebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
   @Before
@@ -40,6 +41,16 @@ public class AbstractWebDriverPoolTest {
 
     factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
         fakeCapabilities, FakeWebDriver.class.getName()));
+  }
+
+  @Test
+  public void testCanInstantiateAndDismissAStandardDriverByName() {
+    WebDriver driver = factory.getDriver(BrowserType.HTMLUNIT);
+    assertThat(driver, instanceOf(HtmlUnitDriver.class));
+    assertFalse(factory.isEmpty());
+
+    factory.dismissDriver(driver);
+    assertTrue(factory.isEmpty());
   }
 
   @Test
