@@ -19,6 +19,7 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public final class LooseWebDriverPool extends AbstractWebDriverPool {
   }
 
   @Override
-  public WebDriver getDriver(String hub, Capabilities capabilities) {
+  public WebDriver getDriver(URL hub, Capabilities capabilities) {
     WebDriver driver = newDriver(hub, capabilities);
     drivers.add(driver);
     return driver;

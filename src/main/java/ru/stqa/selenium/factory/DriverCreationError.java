@@ -20,4 +20,7 @@ public class DriverCreationError extends RuntimeException {
   public DriverCreationError(String msg) {
     super(msg);
   }
+  public DriverCreationError(Throwable e) {
+    super(e);
+  }
 }

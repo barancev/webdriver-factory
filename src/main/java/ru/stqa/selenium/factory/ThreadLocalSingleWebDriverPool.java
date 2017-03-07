@@ -19,6 +19,7 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
   }
 
   @Override
-  public WebDriver getDriver(String hub, Capabilities capabilities) {
+  public WebDriver getDriver(URL hub, Capabilities capabilities) {
     dismissDriversInFinishedThreads();
     String newKey = createKey(capabilities, hub);
     if (tlDriver.get() == null) {
@@ -105,7 +106,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
     return driverToKeyMap.isEmpty();
   }
 
-  private void createNewDriver(Capabilities capabilities, String hub) {
+  private void createNewDriver(Capabilities capabilities, URL hub) {
     String newKey = createKey(capabilities, hub);
     WebDriver driver = newDriver(hub, capabilities);
     driverToKeyMap.put(driver, newKey);

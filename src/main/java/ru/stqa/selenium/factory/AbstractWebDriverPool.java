@@ -20,6 +20,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -69,11 +70,11 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
     remoteDriverProviders.add(0, provider);
   }
 
-  protected String createKey(Capabilities capabilities, String hub) {
-    return capabilities.toString() + ":" + hub;
+  protected String createKey(Capabilities capabilities, URL hub) {
+    return capabilities.toString() + (hub == null ? "" : ":" + hub.toString());
   }
 
-  protected WebDriver newDriver(String hub, Capabilities capabilities) {
+  protected WebDriver newDriver(URL hub, Capabilities capabilities) {
     return (hub == null)
         ? createLocalDriver(capabilities)
         : createRemoteDriver(hub, capabilities);
@@ -89,7 +90,7 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
     throw new DriverCreationError("Can't find local driver provider for capabilities " + capabilities);
   }
 
-  private WebDriver createRemoteDriver(String hub, Capabilities capabilities) {
+  private WebDriver createRemoteDriver(URL hub, Capabilities capabilities) {
     for (RemoteDriverProvider provider : remoteDriverProviders) {
       WebDriver driver = provider.createDriver(hub, capabilities);
       if (driver != null) {

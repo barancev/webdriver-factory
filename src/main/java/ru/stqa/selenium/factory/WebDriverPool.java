@@ -19,20 +19,41 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * See documentation at https://github.com/barancev/webdriver-factory/
  */
 public interface WebDriverPool {
+
   WebDriverPool DEFAULT = new ThreadLocalSingleWebDriverPool();
 
   default WebDriver getDriver(Capabilities capabilities) {
-    return getDriver(null, capabilities);
+    return getDriver((URL) null, capabilities);
   }
-  WebDriver getDriver(String hub, Capabilities capabilities);
+  WebDriver getDriver(URL hub, Capabilities capabilities);
+
+  @Deprecated
+  default WebDriver getDriver(String hub, Capabilities capabilities) {
+    try {
+      return getDriver(new URL(hub), capabilities);
+    } catch (MalformedURLException e) {
+      throw new DriverCreationError(e);
+    }
+  }
+
   void dismissDriver(WebDriver driver);
+
   void dismissAll();
+
   boolean isEmpty();
+
   void setDriverAlivenessChecker(DriverAlivenessChecker checker);
+
   void addLocalDriverProvider(LocalDriverProvider provider);
+
   void addRemoteDriverProvider(RemoteDriverProvider provider);
 }

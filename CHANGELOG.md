@@ -4,7 +4,9 @@
 * Java 8 is the requirement now
 * Updating source and target compilation level to Java 8
 * Updating dependencies to the latest versions
-* Deleting deprecated WebDriverFactory
+* Deleting deprecated WebDriverFactory class
+* Deleting WebDriverPool.setDefaultHub, one should call two-argument getDriver to obtain a remote driver
+* Changing hub address type from String to URL to fail-fast malformed URLs
 
 3.0
 =======================

@@ -20,20 +20,11 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ReflectionBasedRemoteDriverProvider implements RemoteDriverProvider {
   @Override
-  public WebDriver createDriver(String hub, Capabilities capabilities) {
-    try {
-      return new RemoteWebDriver(new URL(hub), capabilities);
-    } catch (MalformedURLException e) {
-      Logger.getLogger(RemoteDriverProvider.class.getName())
-        .log(Level.INFO, "Could not connect to WebDriver hub", e);
-      return null;
-    }
+  public WebDriver createDriver(URL hub, Capabilities capabilities) {
+    return new RemoteWebDriver(hub, capabilities);
   }
 }

@@ -124,7 +124,7 @@ public class AbstractWebDriverPoolTest {
   public void testCanInstantiateARemoteDriver() {
     factory.addRemoteDriverProvider((hub, capabilities) -> new FakeWebDriver(capabilities));
 
-    WebDriver driver = factory.getDriver("some url", DesiredCapabilities.firefox());
+    WebDriver driver = factory.getDriver("http://localhost/", DesiredCapabilities.firefox());
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(factory.isEmpty());
 
@@ -135,7 +135,7 @@ public class AbstractWebDriverPoolTest {
   @Test
   public void testCanNotInstantiateARemoteDriverWithBadUrl() {
     try {
-      WebDriver driver = factory.getDriver("some url", DesiredCapabilities.firefox());
+      WebDriver driver = factory.getDriver("bad url", DesiredCapabilities.firefox());
       fail("Exception expected");
     } catch (DriverCreationError expected) {
     }
