@@ -25,7 +25,9 @@ import org.openqa.selenium.WebDriver;
 public interface WebDriverPool {
   WebDriverPool DEFAULT = new ThreadLocalSingleWebDriverPool();
 
-  WebDriver getDriver(Capabilities capabilities);
+  default WebDriver getDriver(Capabilities capabilities) {
+    return getDriver(null, capabilities);
+  }
   WebDriver getDriver(String hub, Capabilities capabilities);
   void dismissDriver(WebDriver driver);
   void dismissAll();
@@ -33,5 +35,4 @@ public interface WebDriverPool {
   void setDriverAlivenessChecker(DriverAlivenessChecker checker);
   void addLocalDriverProvider(LocalDriverProvider provider);
   void addRemoteDriverProvider(RemoteDriverProvider provider);
-  void setDefaultHub(String hub);
 }

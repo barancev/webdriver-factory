@@ -26,7 +26,6 @@ import java.util.ServiceLoader;
 
 public abstract class AbstractWebDriverPool implements WebDriverPool {
 
-  private String defaultHub = null;
   protected DriverAlivenessChecker alivenessChecker = new DefaultDriverAlivenessChecker();
 
   private List<LocalDriverProvider> localDriverProviders = new ArrayList<>();
@@ -68,14 +67,6 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
 
   public void addRemoteDriverProvider(RemoteDriverProvider provider) {
     remoteDriverProviders.add(0, provider);
-  }
-
-  public void setDefaultHub(String defaultHub) {
-    this.defaultHub = defaultHub;
-  }
-
-  public WebDriver getDriver(Capabilities capabilities) {
-    return getDriver(defaultHub, capabilities);
   }
 
   protected String createKey(Capabilities capabilities, String hub) {
