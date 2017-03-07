@@ -1,6 +1,8 @@
 Web Driver Factory
 ====================
 
+[![Run Status](https://api.shippable.com/projects/58be80a4e4b9a205009c617c/badge?branch=master)](https://app.shippable.com/projects/58be80a4e4b9a205009c617c)
+
 This library provides an utility to manage WebDriver instances. It helps to create, reuse and dismiss WebDriver instances.
 
 To use this library in a maven project you have to add these dependencies:
