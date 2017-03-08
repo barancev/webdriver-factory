@@ -19,35 +19,23 @@ package ru.stqa.selenium.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ReflectionBasedLocalDriverProvider implements LocalDriverProvider {
+public class ReflectionBasedInstanceCreator {
 
-  private static final Logger LOG = Logger.getLogger(ReflectionBasedLocalDriverProvider.class.getName());
+  private static final Logger LOG = Logger.getLogger(ReflectionBasedInstanceCreator.class.getName());
 
-  private Capabilities capabilities;
-  private Class<? extends WebDriver> driverClass;
   private String driverClassName;
 
-  public ReflectionBasedLocalDriverProvider(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
-    this.capabilities = new DesiredCapabilities(capabilities);
-    this.driverClass = driverClass;
-  }
-
-  public ReflectionBasedLocalDriverProvider(Capabilities capabilities, String driverClassName) {
-    this.capabilities = new DesiredCapabilities(capabilities);
+  public ReflectionBasedInstanceCreator(String driverClassName) {
     this.driverClassName = driverClassName;
   }
 
   private Class<? extends WebDriver> getDriverClass() {
-    if (driverClass != null) {
-      return driverClass;
-    }
     try {
       return Class.forName(driverClassName).asSubclass(WebDriver.class);
     } catch (ClassNotFoundException | NoClassDefFoundError e) {
@@ -59,18 +47,8 @@ public class ReflectionBasedLocalDriverProvider implements LocalDriverProvider {
     }
   }
 
-  @Override
-  public boolean canCreateDriverInstanceFor(Capabilities capabilities) {
-    return this.capabilities.getBrowserName().equals(capabilities.getBrowserName());
-  }
-
-  @Override
   public WebDriver createDriver(Capabilities capabilities) {
-    if (canCreateDriverInstanceFor(capabilities)) {
-      return callConstructor(getDriverClass(), capabilities);
-    } else {
-      return null;
-    }
+    return callConstructor(getDriverClass(), capabilities);
   }
 
   private WebDriver callConstructor(Class<? extends WebDriver> from, Capabilities capabilities) {

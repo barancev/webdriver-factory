@@ -22,16 +22,7 @@ import org.openqa.selenium.WebDriver;
 public interface LocalDriverProvider {
 
   /**
-   * Checks that the browser name set in the provided capabilities matches the browser name
-   * set in the desired capabilities.
-   * @param capabilities The desired capabilities
-   * @return true if the browser name is the same, false otherwise
-   */
-  boolean canCreateDriverInstanceFor(Capabilities capabilities);
-
-  /**
-   * Creates a new driver with the desired capabilities, or returns null if the
-   * capabilities does not match the provider's ability to create drivers.
+   * Creates a new local driver with the desired capabilities, or throws an error if the driver can't be instantiated.
    */
   WebDriver createDriver(Capabilities capabilities);
 

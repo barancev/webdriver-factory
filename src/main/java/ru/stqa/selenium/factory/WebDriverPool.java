@@ -105,9 +105,8 @@ public interface WebDriverPool {
    */
   boolean isEmpty();
 
-  void setDriverAlivenessChecker(DriverAlivenessChecker checker);
+  void setDriverAlivenessChecker(DriverAlivenessChecker alivenessChecker);
 
-  void addLocalDriverProvider(LocalDriverProvider provider);
-
-  void addRemoteDriverProvider(RemoteDriverProvider provider);
+  void setLocalDriverProvider(LocalDriverProvider localDriverProvider);
+  void setRemoteDriverProvider(RemoteDriverProvider remoteDriverProvider);
 }

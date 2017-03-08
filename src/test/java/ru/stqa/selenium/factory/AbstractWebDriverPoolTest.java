@@ -18,10 +18,13 @@ package ru.stqa.selenium.factory;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.net.URL;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,6 +35,16 @@ public class AbstractWebDriverPoolTest {
   private WebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
+  private class CustomLocalDriverProvider extends DefaultLocalDriverProvider {
+    @Override
+    public WebDriver createDriver(Capabilities capabilities) {
+      if (capabilities.getBrowserName().equals("FAKE")) {
+        return new FakeWebDriver(capabilities);
+      }
+      return super.createDriver(capabilities);
+    }
+  }
+
   @Before
   public void setUp() {
     fakeCapabilities = new DesiredCapabilities();
@@ -39,8 +52,7 @@ public class AbstractWebDriverPoolTest {
 
     factory = new SingleWebDriverPool();
 
-    factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
-        fakeCapabilities, FakeWebDriver.class.getName()));
+    factory.setLocalDriverProvider(new CustomLocalDriverProvider());
   }
 
   @Test
@@ -74,22 +86,6 @@ public class AbstractWebDriverPoolTest {
   }
 
   @Test
-  public void throwsOnAttemptToInstantiateADriverByBadClassName() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setBrowserName("FAKE-2");
-    factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
-        capabilities, "BadClassName"));
-
-    try {
-      WebDriver driver = factory.getDriver(capabilities);
-      fail("Exception expected");
-    } catch (DriverCreationError expected) {
-    }
-
-    assertTrue(factory.isEmpty());
-  }
-
-  @Test
   public void testCanInstantiateAndDismissADriverWithACustomDriverProvider() {
     WebDriver driver = factory.getDriver(fakeCapabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
@@ -100,24 +96,8 @@ public class AbstractWebDriverPoolTest {
   }
 
   @Test
-  public void testCanOverrideExistingDriverProvider() {
-    factory.addLocalDriverProvider(
-        new ReflectionBasedLocalDriverProvider(DesiredCapabilities.firefox(),
-            FakeWebDriver.class.getName()));
-
-    WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
-    assertThat(driver, instanceOf(FakeWebDriver.class));
-    assertFalse(factory.isEmpty());
-
-    factory.dismissDriver(driver);
-    assertTrue(factory.isEmpty());
-  }
-
-  @Test
   public void testCanHandleAlertsOnDriverAvailabilityCheck() {
-    factory.addLocalDriverProvider(
-        new ReflectionBasedLocalDriverProvider(DesiredCapabilities.firefox(),
-            FakeAlertiveWebDriver.class.getName()));
+    factory.setLocalDriverProvider(FakeAlertiveWebDriver::new);
 
     WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
     assertThat(driver, instanceOf(FakeAlertiveWebDriver.class));
@@ -133,7 +113,12 @@ public class AbstractWebDriverPoolTest {
 
   @Test
   public void testCanInstantiateARemoteDriver() {
-    factory.addRemoteDriverProvider((hub, capabilities) -> new FakeWebDriver(capabilities));
+    factory.setRemoteDriverProvider(new RemoteDriverProvider() {
+      @Override
+      public WebDriver createDriver(URL hub, Capabilities capabilities) {
+        return new FakeWebDriver(capabilities);
+      }
+    });
 
     WebDriver driver = factory.getDriver("http://localhost/", DesiredCapabilities.firefox());
     assertThat(driver, instanceOf(FakeWebDriver.class));

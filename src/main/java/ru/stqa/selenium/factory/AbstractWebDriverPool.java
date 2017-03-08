@@ -18,58 +18,14 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.stream.Stream;
 
 public abstract class AbstractWebDriverPool implements WebDriverPool {
 
-  protected DriverAlivenessChecker alivenessChecker = new DefaultDriverAlivenessChecker();
-
-  private List<LocalDriverProvider> localDriverProviders = new ArrayList<>();
-  {
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver"));
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver"));
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver"));
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.edge(), "org.openqa.selenium.edge.EdgeDriver"));
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.operaBlink(), "org.openqa.selenium.opera.OperaDriver"));
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver"));
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver"));
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver"));
-    localDriverProviders.add(new ReflectionBasedLocalDriverProvider(
-      DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver"));
-    for (LocalDriverProvider provider : ServiceLoader.load(LocalDriverProvider.class)) {
-      localDriverProviders.add(provider);
-    }
-  }
-
-  private List<RemoteDriverProvider> remoteDriverProviders = new ArrayList<>();
-  {
-    remoteDriverProviders.add(new RemoteDriverProvider() {});
-    for (RemoteDriverProvider provider : ServiceLoader.load(RemoteDriverProvider.class)) {
-      remoteDriverProviders.add(provider);
-    }
-  }
-
-  public void addLocalDriverProvider(LocalDriverProvider provider) {
-    localDriverProviders.add(0, provider);
-  }
-
-  public void addRemoteDriverProvider(RemoteDriverProvider provider) {
-    remoteDriverProviders.add(0, provider);
-  }
+  DriverAlivenessChecker alivenessChecker = new DefaultDriverAlivenessChecker();
+  private LocalDriverProvider localDriverProvider = new DefaultLocalDriverProvider();
+  private RemoteDriverProvider remoteDriverProvider = new RemoteDriverProvider() {};
 
   protected String createKey(Capabilities capabilities, URL hub) {
     return capabilities.toString() + (hub == null ? "" : ":" + hub.toString());
@@ -77,31 +33,19 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
 
   protected WebDriver newDriver(URL hub, Capabilities capabilities) {
     return (hub == null)
-        ? createLocalDriver(capabilities)
-        : createRemoteDriver(hub, capabilities);
-  }
-
-  private WebDriver createLocalDriver(Capabilities capabilities) {
-    for (LocalDriverProvider provider : localDriverProviders) {
-      WebDriver driver = provider.createDriver(capabilities);
-      if (driver != null) {
-        return driver;
-      }
-    }
-    throw new DriverCreationError("Can't find local driver provider for capabilities " + capabilities);
-  }
-
-  private WebDriver createRemoteDriver(URL hub, Capabilities capabilities) {
-    for (RemoteDriverProvider provider : remoteDriverProviders) {
-      WebDriver driver = provider.createDriver(hub, capabilities);
-      if (driver != null) {
-        return driver;
-      }
-    }
-    throw new DriverCreationError("Can't find remote driver provider for capabilities " + capabilities);
+        ? localDriverProvider.createDriver(capabilities)
+        : remoteDriverProvider.createDriver(hub, capabilities);
   }
 
   public void setDriverAlivenessChecker(DriverAlivenessChecker alivenessChecker) {
     this.alivenessChecker = alivenessChecker;
+  }
+
+  public void setLocalDriverProvider(LocalDriverProvider localDriverProvider) {
+    this.localDriverProvider = localDriverProvider;
+  }
+
+  public void setRemoteDriverProvider(RemoteDriverProvider remoteDriverProvider) {
+    this.remoteDriverProvider = remoteDriverProvider;
   }
 }

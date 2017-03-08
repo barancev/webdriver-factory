@@ -35,8 +35,7 @@ public class LooseWebDriverPoolTest {
 
     factory = new LooseWebDriverPool();
 
-    factory.addLocalDriverProvider(new ReflectionBasedLocalDriverProvider(
-        fakeCapabilities, FakeWebDriver.class.getName()));
+    factory.setLocalDriverProvider(FakeWebDriver::new);
   }
 
   private boolean isActive(WebDriver driver) {

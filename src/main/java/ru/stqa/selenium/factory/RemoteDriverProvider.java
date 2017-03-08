@@ -25,8 +25,7 @@ import java.net.URL;
 public interface RemoteDriverProvider {
 
   /**
-   * Creates a new driver with the desired capabilities, or returns null if the
-   * capabilities does not match the provider's ability to create drivers.
+   * Creates a new remote driver with the desired capabilities, or throws an error if the driver can't be instantiated.
    */
   default WebDriver createDriver(URL hub, Capabilities capabilities) {
     return new RemoteWebDriver(hub, capabilities);
