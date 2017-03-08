@@ -18,6 +18,7 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.URL;
 
@@ -27,6 +28,8 @@ public interface RemoteDriverProvider {
    * Creates a new driver with the desired capabilities, or returns null if the
    * capabilities does not match the provider's ability to create drivers.
    */
-  WebDriver createDriver(URL hub, Capabilities capabilities);
+  default WebDriver createDriver(URL hub, Capabilities capabilities) {
+    return new RemoteWebDriver(hub, capabilities);
+  }
 
 }

@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.stream.Stream;
 
 public abstract class AbstractWebDriverPool implements WebDriverPool {
 
@@ -56,7 +57,7 @@ public abstract class AbstractWebDriverPool implements WebDriverPool {
 
   private List<RemoteDriverProvider> remoteDriverProviders = new ArrayList<>();
   {
-    remoteDriverProviders.add(new ReflectionBasedRemoteDriverProvider());
+    remoteDriverProviders.add(new RemoteDriverProvider() {});
     for (RemoteDriverProvider provider : ServiceLoader.load(RemoteDriverProvider.class)) {
       remoteDriverProviders.add(provider);
     }
