@@ -16,7 +16,7 @@ To use this library in a maven project you have to add these dependencies:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-java</artifactId>
-    <version>2.53.1</version>
+    <version>3.3.0</version>
 </dependency>
 ```
 
