@@ -18,16 +18,11 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ReflectionBasedInstanceCreator {
-
-  private static final Logger LOG = Logger.getLogger(ReflectionBasedInstanceCreator.class.getName());
 
   private String driverClassName;
 
@@ -39,11 +34,9 @@ public class ReflectionBasedInstanceCreator {
     try {
       return Class.forName(driverClassName).asSubclass(WebDriver.class);
     } catch (ClassNotFoundException | NoClassDefFoundError e) {
-      LOG.log(Level.INFO, "Driver class not found: " + driverClassName);
-      return null;
+      throw new DriverCreationError("Driver class not found: " + driverClassName, e);
     } catch (UnsupportedClassVersionError e) {
-      LOG.log(Level.INFO, "Driver class is built for higher Java version: " + driverClassName);
-      return null;
+      throw new DriverCreationError("Driver class is built for higher Java version: " + driverClassName, e);
     }
   }
 
@@ -52,9 +45,6 @@ public class ReflectionBasedInstanceCreator {
   }
 
   private WebDriver callConstructor(Class<? extends WebDriver> from, Capabilities capabilities) {
-    if (from == null) {
-      return null;
-    }
     try {
       Constructor<? extends WebDriver> constructor = from.getConstructor(Capabilities.class);
       return constructor.newInstance(capabilities);
@@ -62,10 +52,10 @@ public class ReflectionBasedInstanceCreator {
       try {
         return from.newInstance();
       } catch (InstantiationException | IllegalAccessException e1) {
-        throw new WebDriverException(e);
+        throw new DriverCreationError(e);
       }
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new WebDriverException(e);
+      throw new DriverCreationError(e);
     }
   }
 }

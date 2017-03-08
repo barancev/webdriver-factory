@@ -76,16 +76,6 @@ public class AbstractWebDriverPoolTest {
   }
 
   @Test
-  public void testCanInstantiateAndDismissADriverByClassName() {
-    WebDriver driver = factory.getDriver(fakeCapabilities);
-    assertThat(driver, instanceOf(FakeWebDriver.class));
-    assertFalse(factory.isEmpty());
-
-    factory.dismissDriver(driver);
-    assertTrue(factory.isEmpty());
-  }
-
-  @Test
   public void testCanInstantiateAndDismissADriverWithACustomDriverProvider() {
     WebDriver driver = factory.getDriver(fakeCapabilities);
     assertThat(driver, instanceOf(FakeWebDriver.class));
@@ -125,6 +115,17 @@ public class AbstractWebDriverPoolTest {
     assertFalse(factory.isEmpty());
 
     factory.dismissDriver(driver);
+    assertTrue(factory.isEmpty());
+  }
+
+  @Test
+  public void testThrowsAnErrorIfDriverCannotBeCreated() {
+    try {
+      WebDriver driver = factory.getDriver("BADNAME");
+      fail("Exception expected");
+    } catch (DriverCreationError expected) {
+    }
+
     assertTrue(factory.isEmpty());
   }
 
