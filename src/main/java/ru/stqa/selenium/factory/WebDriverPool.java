@@ -50,7 +50,7 @@ public interface WebDriverPool {
    * @param browser The desired browser
    */
   default WebDriver getDriver(String browser) {
-    return getDriver((URL) null, browser);
+    return getDriver(null, browser);
   }
 
   /**
@@ -61,7 +61,7 @@ public interface WebDriverPool {
   default WebDriver getDriver(URL hub, String browser) {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setBrowserName(browser);
-    return getDriver(capabilities);
+    return getDriver(hub, capabilities);
   }
 
   /**

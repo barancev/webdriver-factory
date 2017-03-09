@@ -65,9 +65,9 @@
 
 * Selenium 2.42 support
 * Defaut mode is set to THREADLOCAL_SINGLETON
-* Samples are updated to call WebDriverFactory.dismisslAll() explicitly; yes, there is a shutdown hook, but it is "the last resort", not the recommended practice
+* Samples are updated to call WebDriverFactory.dismissAll() explicitly; yes, there is a shutdown hook, but it is "the last resort", not the recommended practice
 
 1.1.41 (released 28.03.2014)
 ============================
 
-Inital release, with Selenium 2.41 support
+Initial release, with Selenium 2.41 support
