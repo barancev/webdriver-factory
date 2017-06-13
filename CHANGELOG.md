@@ -1,3 +1,9 @@
+4.1
+=======================
+* Fixing ConcurrentModificationException in ThreadLocalSingleWebDriverPool
+* Updating dependencies to Selenium 3.4
+* Deleting deprecated method getDriver that accepts hub address as a String
+
 4.0
 =======================
 
