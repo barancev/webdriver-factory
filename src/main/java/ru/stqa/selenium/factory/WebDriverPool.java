@@ -68,7 +68,7 @@ public interface WebDriverPool {
    * @param capabilities The desired driver capabilities
    */
   default WebDriver getDriver(Capabilities capabilities) {
-    return getDriver((URL) null, capabilities);
+    return getDriver(null, capabilities);
   }
 
   /**
