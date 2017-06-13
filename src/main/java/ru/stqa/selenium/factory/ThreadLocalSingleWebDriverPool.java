@@ -35,7 +35,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
   }
 
   @Override
-  public WebDriver getDriver(URL hub, Capabilities capabilities) {
+  public synchronized WebDriver getDriver(URL hub, Capabilities capabilities) {
     dismissDriversInFinishedThreads();
     String newKey = createKey(capabilities, hub);
     if (tlDriver.get() == null) {
@@ -66,7 +66,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
   }
 
   @Override
-  public void dismissDriver(WebDriver driver) {
+  public synchronized void dismissDriver(WebDriver driver) {
     dismissDriversInFinishedThreads();
     if (driverToKeyMap.get(driver) == null) {
       throw new Error("The driver is not owned by the factory: " + driver);
@@ -80,7 +80,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
     tlDriver.remove();
   }
 
-  private void dismissDriversInFinishedThreads() {
+  private synchronized void dismissDriversInFinishedThreads() {
     List<WebDriver> stale = driverToThread.entrySet().stream()
       .filter((entry) -> !entry.getValue().isAlive())
       .map(Map.Entry::getKey).collect(Collectors.toList());
@@ -93,7 +93,7 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
   }
 
   @Override
-  public void dismissAll() {
+  public synchronized void dismissAll() {
     for (WebDriver driver : new HashSet<>(driverToKeyMap.keySet())) {
       driver.quit();
       driverToKeyMap.remove(driver);
@@ -102,11 +102,11 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
   }
 
   @Override
-  public boolean isEmpty() {
+  public synchronized boolean isEmpty() {
     return driverToKeyMap.isEmpty();
   }
 
-  private void createNewDriver(Capabilities capabilities, URL hub) {
+  private synchronized void createNewDriver(Capabilities capabilities, URL hub) {
     String newKey = createKey(capabilities, hub);
     WebDriver driver = newDriver(hub, capabilities);
     driverToKeyMap.put(driver, newKey);

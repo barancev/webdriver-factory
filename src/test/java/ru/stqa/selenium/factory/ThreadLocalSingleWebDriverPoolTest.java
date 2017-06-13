@@ -22,6 +22,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -194,6 +195,22 @@ public class ThreadLocalSingleWebDriverPoolTest {
     assertNotSame(driver2, driver);
     assertTrue(isActive(driver2));
     assertFalse(isActive(driver));
+  }
+
+  @Test
+  public void testConcurrentModificationExceptionInDismissDriversInFinishedThreadsMethod() throws InterruptedException {
+    List<Thread> threads = new ArrayList<>();
+    List<WebDriver> drivers = new ArrayList<>();
+    for (int d = 0; d < 1000; d++) {
+      threads.add(new Thread(() -> drivers.add(factory.getDriver(fakeCapabilities))));
+    }
+    for (Thread thread : threads) {
+      thread.start();
+    }
+    for (Thread thread : threads) {
+      thread.join();
+    }
+    assertEquals(threads.size(), drivers.size());
   }
 
 }
