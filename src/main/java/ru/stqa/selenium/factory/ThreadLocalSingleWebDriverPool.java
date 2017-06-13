@@ -74,10 +74,13 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
     if (driver != tlDriver.get()) {
       throw new Error("The driver does not belong to the current thread: " + driver);
     }
-    driver.quit();
-    driverToKeyMap.remove(driver);
-    driverToThread.remove(driver);
-    tlDriver.remove();
+    try {
+      driver.quit();
+    } finally {
+      driverToKeyMap.remove(driver);
+      driverToThread.remove(driver);
+      tlDriver.remove();
+    }
   }
 
   private synchronized void dismissDriversInFinishedThreads() {
@@ -86,18 +89,24 @@ public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool 
       .map(Map.Entry::getKey).collect(Collectors.toList());
 
     for (WebDriver driver : stale) {
-      driver.quit();
-      driverToKeyMap.remove(driver);
-      driverToThread.remove(driver);
+      try {
+        driver.quit();
+      } finally {
+        driverToKeyMap.remove(driver);
+        driverToThread.remove(driver);
+      }
     }
   }
 
   @Override
   public synchronized void dismissAll() {
     for (WebDriver driver : new HashSet<>(driverToKeyMap.keySet())) {
-      driver.quit();
-      driverToKeyMap.remove(driver);
-      driverToThread.remove(driver);
+      try {
+        driver.quit();
+      } finally {
+        driverToKeyMap.remove(driver);
+        driverToThread.remove(driver);
+      }
     }
   }
 

@@ -18,6 +18,7 @@ package ru.stqa.selenium.factory;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 import java.net.URL;
 
@@ -79,9 +80,12 @@ public final class SingleWebDriverPool extends AbstractWebDriverPool {
 
   private void dismissDriver() {
     if (driver != null) {
-      driver.quit();
-      driver = null;
-      key = null;
+      try {
+        driver.quit();
+      } finally {
+        driver = null;
+        key = null;
+      }
     }
   }
 }

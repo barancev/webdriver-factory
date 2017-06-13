@@ -18,7 +18,9 @@ package ru.stqa.selenium.factory;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
@@ -211,6 +213,32 @@ public class ThreadLocalSingleWebDriverPoolTest {
       thread.join();
     }
     assertEquals(threads.size(), drivers.size());
+  }
+
+  private class BrokenFakeWebDriver extends FakeWebDriver {
+    public BrokenFakeWebDriver(Capabilities capabilities) {
+      super(capabilities);
+    }
+
+    public void quit() {
+      throw new WebDriverException("I don't want to quit");
+    }
+  }
+
+  @Test
+  public void testShouldBeAbleToUseFactoryIfDriverCannotQuit() {
+    factory.setLocalDriverProvider(BrokenFakeWebDriver::new);
+
+    WebDriver driver = factory.getDriver(fakeCapabilities);
+    assertTrue(isActive(driver));
+    try {
+      factory.dismissDriver(driver);
+      fail();
+    } catch (WebDriverException expected) {
+    }
+
+    WebDriver driver2 = factory.getDriver(fakeCapabilities);
+    assertNotSame(driver2, driver);
   }
 
 }
