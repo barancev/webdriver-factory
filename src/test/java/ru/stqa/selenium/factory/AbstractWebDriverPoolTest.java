@@ -24,6 +24,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -102,7 +103,7 @@ public class AbstractWebDriverPoolTest {
   }
 
   @Test
-  public void testCanInstantiateARemoteDriver() {
+  public void testCanInstantiateARemoteDriver() throws MalformedURLException {
     factory.setRemoteDriverProvider(new RemoteDriverProvider() {
       @Override
       public WebDriver createDriver(URL hub, Capabilities capabilities) {
@@ -110,7 +111,7 @@ public class AbstractWebDriverPoolTest {
       }
     });
 
-    WebDriver driver = factory.getDriver("http://localhost/", DesiredCapabilities.firefox());
+    WebDriver driver = factory.getDriver(new URL("http://localhost/"), DesiredCapabilities.firefox());
     assertThat(driver, instanceOf(FakeWebDriver.class));
     assertFalse(factory.isEmpty());
 
@@ -122,17 +123,6 @@ public class AbstractWebDriverPoolTest {
   public void testThrowsAnErrorIfDriverCannotBeCreated() {
     try {
       WebDriver driver = factory.getDriver("BADNAME");
-      fail("Exception expected");
-    } catch (DriverCreationError expected) {
-    }
-
-    assertTrue(factory.isEmpty());
-  }
-
-  @Test
-  public void testCanNotInstantiateARemoteDriverWithBadUrl() {
-    try {
-      WebDriver driver = factory.getDriver("bad url", DesiredCapabilities.firefox());
       fail("Exception expected");
     } catch (DriverCreationError expected) {
     }

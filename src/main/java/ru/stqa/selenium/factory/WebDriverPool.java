@@ -20,7 +20,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -78,15 +77,6 @@ public interface WebDriverPool {
    * @param capabilities The desired driver capabilities
    */
   WebDriver getDriver(URL hub, Capabilities capabilities);
-
-  @Deprecated
-  default WebDriver getDriver(String hub, Capabilities capabilities) {
-    try {
-      return getDriver(new URL(hub), capabilities);
-    } catch (MalformedURLException e) {
-      throw new DriverCreationError(e);
-    }
-  }
 
   /**
    * Quits the driver and removes it from the pool, if it is a managed instance.
