@@ -16,25 +16,24 @@
 
 package ru.stqa.selenium.factory;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadLocalSingleWebDriverPoolTest {
 
   private WebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     fakeCapabilities = new DesiredCapabilities();
     fakeCapabilities.setBrowserName("FAKE");
@@ -107,7 +106,7 @@ public class ThreadLocalSingleWebDriverPoolTest {
     assertTrue(factory.isEmpty());
   }
 
-  @Test(expected = Error.class)
+  @Test
   public void testShouldDismissOwnedDriversOnly() {
     WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
@@ -115,7 +114,7 @@ public class ThreadLocalSingleWebDriverPoolTest {
     WebDriver driver2 = new FakeWebDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
 
-    factory.dismissDriver(driver2);
+    assertThrows(Error.class, () -> factory.dismissDriver(driver2));
   }
 
   @Test
@@ -233,7 +232,7 @@ public class ThreadLocalSingleWebDriverPoolTest {
     assertTrue(isActive(driver));
     try {
       factory.dismissDriver(driver);
-      fail();
+      fail("Should throw");
     } catch (WebDriverException expected) {
     }
 

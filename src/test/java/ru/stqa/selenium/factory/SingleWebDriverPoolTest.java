@@ -16,21 +16,21 @@
 
 package ru.stqa.selenium.factory;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SingleWebDriverPoolTest {
 
   private WebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     fakeCapabilities = new DesiredCapabilities();
     fakeCapabilities.setBrowserName("FAKE");
@@ -100,7 +100,7 @@ public class SingleWebDriverPoolTest {
     assertFalse(isActive(driver));
   }
 
-  @Test(expected = Error.class)
+  @Test
   public void testShouldDismissOwnedDriversOnly() {
     WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
@@ -108,7 +108,7 @@ public class SingleWebDriverPoolTest {
     WebDriver driver2 = new FakeWebDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
 
-    factory.dismissDriver(driver2);
+    assertThrows(Error.class, () -> factory.dismissDriver(driver2));
   }
 
   private class BrokenFakeWebDriver extends FakeWebDriver {
@@ -129,7 +129,7 @@ public class SingleWebDriverPoolTest {
     assertTrue(isActive(driver));
     try {
       factory.dismissDriver(driver);
-      fail();
+      fail("Should throw");
     } catch (WebDriverException expected) {
     }
 
