@@ -1,3 +1,7 @@
+4.2
+=======================
+* Updating dependencies to Selenium 3.5.1
+
 4.1
 =======================
 * Fixing ConcurrentModificationException in ThreadLocalSingleWebDriverPool
