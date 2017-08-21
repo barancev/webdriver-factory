@@ -3,7 +3,7 @@
 
   <groupId>ru.stqa.selenium</groupId>
   <artifactId>webdriver-factory</artifactId>
-  <version>4.2-SNAPSHOT</version>
+  <version>4.2</version>
   <packaging>jar</packaging>
 
   <name>webdriver-factory</name>
@@ -32,7 +32,7 @@
     <connection>scm:git:git@github.com:barancev/webdriver-factory.git</connection>
     <developerConnection>scm:git:git@github.com:barancev/webdriver-factory.git</developerConnection>
     <url>https://github.com/barancev/webdriver-factory</url>
-    <tag>HEAD</tag>
+    <tag>webdriver-factory-4.2</tag>
   </scm>
 
   <dependencies>
