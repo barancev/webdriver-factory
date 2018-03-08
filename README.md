@@ -34,9 +34,8 @@ You can use as many separate pools as you like, but there is also `WebDriverPool
 **1) The simplest use case**
 
 ```java
-Capabilities firefox = DesiredCapabilities.firefox();
 // create a new managed instance
-WebDriver driver = WebDriverPool.DEFAULT.getDriver(firefox);
+WebDriver driver = WebDriverPool.DEFAULT.getDriver(new FirefoxOptions());
 // do something with the driver
 driver.get("http://seleniumhq.org/");
 // destroy the instance (calls driver.quit() implicitly)
@@ -46,14 +45,13 @@ WebDriverPool.DEFAULT.dismissDriver(driver);
 **2) If one requests a new driver with the same capabilities** the existing instance should be reused by `SingleWebDriverPool` and `ThreadLocalSingleWebDriverPool`:
 
 ```java
-Capabilities firefox = DesiredCapabilities.firefox();
 // create a new managed instance
-WebDriver driver = WebDriverPool.DEFAULT.getDriver(firefox);
+WebDriver driver = WebDriverPool.DEFAULT.getDriver(new FirefoxOptions());
 // do something with the driver
 driver.get("http://seleniumhq.org/");
 
 // obtain the same instance from the pool of the managed instances
-driver = WebDriverPool.DEFAULT.getDriver(firefox);
+driver = WebDriverPool.DEFAULT.getDriver(new FirefoxOptions());
 // do something with the driver
 driver.get("http://selenium2.ru/");
 
@@ -75,16 +73,14 @@ What happens to the previous instances depends on the pool implementation:
 ```java
 @Test
 public void testSomething() {
-  Capabilities firefox = DesiredCapabilities.firefox();
-  WebDriver driver = WebDriverPool.DEFAULT.getDriver(firefox);
+  WebDriver driver = WebDriverPool.DEFAULT.getDriver(new FirefoxOptions());
   // do something with the driver
   driver.get("http://seleniumhq.org/");
 }
 
 @Test
 public void testSomethingElse() {
-  Capabilities chrome = DesiredCapabilities.chrome();
-  WebDriver driver = WebDriverPool.DEFAULT.getDriver(chrome);
+  WebDriver driver = WebDriverPool.DEFAULT.getDriver(new ChromeOptions());
   // do something with the driver
   driver.get("http://seleniumhq.org/");
 }
