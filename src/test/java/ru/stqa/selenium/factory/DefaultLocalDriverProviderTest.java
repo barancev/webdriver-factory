@@ -18,6 +18,7 @@ package ru.stqa.selenium.factory;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -37,12 +38,14 @@ public class DefaultLocalDriverProviderTest {
     provider = new DefaultLocalDriverProvider();
   }
 
+  @Disabled
   @Test
   void canInstantiateFirefoxDriverWithFirefoxOptions() {
     driver = provider.createDriver(new FirefoxOptions());
     assertTrue(driver instanceof FirefoxDriver);
   }
 
+  @Disabled
   @Test
   void canInstantiateChromeDriverWithChromeOptions() {
     driver = provider.createDriver(new ChromeOptions());
