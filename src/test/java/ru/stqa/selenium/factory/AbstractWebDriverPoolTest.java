@@ -27,8 +27,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractWebDriverPoolTest {
@@ -36,7 +34,7 @@ public class AbstractWebDriverPoolTest {
   private WebDriverPool factory;
   private DesiredCapabilities fakeCapabilities;
 
-  private class CustomLocalDriverProvider extends DefaultLocalDriverProvider {
+  private static class CustomLocalDriverProvider extends DefaultLocalDriverProvider {
     @Override
     public WebDriver createDriver(Capabilities capabilities) {
       if (capabilities.getBrowserName().equals("FAKE")) {
@@ -59,7 +57,7 @@ public class AbstractWebDriverPoolTest {
   @Test
   public void testCanInstantiateAndDismissAStandardDriverByName() {
     WebDriver driver = factory.getDriver(BrowserType.HTMLUNIT);
-    assertThat(driver, instanceOf(HtmlUnitDriver.class));
+    assertTrue(driver instanceof HtmlUnitDriver);
     assertFalse(factory.isEmpty());
 
     factory.dismissDriver(driver);
@@ -69,7 +67,7 @@ public class AbstractWebDriverPoolTest {
   @Test
   public void testCanInstantiateAndDismissAStandardDriver() {
     WebDriver driver = factory.getDriver(DesiredCapabilities.htmlUnit());
-    assertThat(driver, instanceOf(HtmlUnitDriver.class));
+    assertTrue(driver instanceof HtmlUnitDriver);
     assertFalse(factory.isEmpty());
 
     factory.dismissDriver(driver);
@@ -79,7 +77,7 @@ public class AbstractWebDriverPoolTest {
   @Test
   public void testCanInstantiateAndDismissADriverWithACustomDriverProvider() {
     WebDriver driver = factory.getDriver(fakeCapabilities);
-    assertThat(driver, instanceOf(FakeWebDriver.class));
+    assertTrue(driver instanceof FakeWebDriver);
     assertFalse(factory.isEmpty());
 
     factory.dismissDriver(driver);
@@ -91,7 +89,7 @@ public class AbstractWebDriverPoolTest {
     factory.setLocalDriverProvider(FakeAlertiveWebDriver::new);
 
     WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
-    assertThat(driver, instanceOf(FakeAlertiveWebDriver.class));
+    assertTrue(driver instanceof FakeAlertiveWebDriver);
     assertFalse(factory.isEmpty());
 
     WebDriver driver2 = factory.getDriver(DesiredCapabilities.firefox());
@@ -112,7 +110,7 @@ public class AbstractWebDriverPoolTest {
     });
 
     WebDriver driver = factory.getDriver(new URL("http://localhost/"), DesiredCapabilities.firefox());
-    assertThat(driver, instanceOf(FakeWebDriver.class));
+    assertTrue(driver instanceof FakeWebDriver);
     assertFalse(factory.isEmpty());
 
     factory.dismissDriver(driver);
@@ -121,11 +119,7 @@ public class AbstractWebDriverPoolTest {
 
   @Test
   public void testThrowsAnErrorIfDriverCannotBeCreated() {
-    try {
-      WebDriver driver = factory.getDriver("BADNAME");
-      fail("Exception expected");
-    } catch (DriverCreationError expected) {
-    }
+    assertThrows(DriverCreationError.class, () -> factory.getDriver("BADNAME"));
 
     assertTrue(factory.isEmpty());
   }
@@ -139,5 +133,4 @@ public class AbstractWebDriverPoolTest {
 
     assertNotSame(driver2, driver1);
   }
-
 }
