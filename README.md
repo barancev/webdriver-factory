@@ -11,12 +11,12 @@ To use this library in a maven project you have to add these dependencies:
 <dependency>
     <groupId>ru.stqa.selenium</groupId>
     <artifactId>webdriver-factory</artifactId>
-    <version>4.3</version>
+    <version>4.4</version>
 </dependency>
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-java</artifactId>
-    <version>3.10.0</version>
+    <version>3.141.59</version>
 </dependency>
 ```
 
