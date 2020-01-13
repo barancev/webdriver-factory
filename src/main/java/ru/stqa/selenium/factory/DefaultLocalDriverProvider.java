@@ -16,43 +16,78 @@
 
 package ru.stqa.selenium.factory;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 public class DefaultLocalDriverProvider implements LocalDriverProvider {
 
-  private static class Entry {
-    private String browserName;
-    private final String className;
+  private Map<String, Function<Capabilities, WebDriver>> creators = new ImmutableMap.Builder<String, Function<Capabilities, WebDriver>>()
+    .put(BrowserType.CHROME, caps -> new ChromeDriver(new ChromeOptions().merge(caps)))
+    .put(BrowserType.FIREFOX, caps -> new FirefoxDriver(new FirefoxOptions().merge(caps)))
+    .put(BrowserType.IE, caps -> new InternetExplorerDriver(new InternetExplorerOptions().merge(caps)))
+    .put(BrowserType.EDGE, caps -> new EdgeDriver(new EdgeOptions().merge(caps)))
+    .put(BrowserType.SAFARI, caps -> new SafariDriver(new SafariOptions().merge(caps)))
+    .put(BrowserType.OPERA_BLINK, caps -> new OperaDriver(new OperaOptions().merge(caps)))
+    .build();
 
-    public Entry(String browserName, String className) {
-      this.browserName = browserName;
-      this.className = className;
-    }
+  private Map<String, String> externalDriverClasses = new ImmutableMap.Builder<String, String>()
+    .put(BrowserType.OPERA, "com.opera.core.systems.OperaDriver")
+    .put(BrowserType.HTMLUNIT, "org.openqa.selenium.htmlunit.HtmlUnitDriver")
+    .build();
+
+  public WebDriver createDriver(ChromeOptions options) {
+    return new ChromeDriver(options);
   }
 
-  private Map<String, ReflectionBasedInstanceCreator> creators = Stream.of(
-    new Entry(BrowserType.CHROME, "org.openqa.selenium.chrome.ChromeDriver"),
-    new Entry(BrowserType.FIREFOX, "org.openqa.selenium.firefox.FirefoxDriver"),
-    new Entry(BrowserType.IE, "org.openqa.selenium.ie.InternetExplorerDriver"),
-    new Entry(BrowserType.EDGE, "org.openqa.selenium.edge.EdgeDriver"),
-    new Entry(BrowserType.OPERA_BLINK, "org.openqa.selenium.opera.OperaDriver"),
-    new Entry(BrowserType.OPERA, "com.opera.core.systems.OperaDriver"),
-    new Entry(BrowserType.SAFARI, "org.openqa.selenium.safari.SafariDriver"),
-    new Entry(BrowserType.PHANTOMJS, "org.openqa.selenium.phantomjs.PhantomJSDriver"),
-    new Entry(BrowserType.HTMLUNIT, "org.openqa.selenium.htmlunit.HtmlUnitDriver")
-  ).collect(Collectors.toMap(e -> e.browserName, e -> new ReflectionBasedInstanceCreator(e.className)));
+  public WebDriver createDriver(FirefoxOptions options) {
+    return new FirefoxDriver(options);
+  }
+
+  public WebDriver createDriver(InternetExplorerOptions options) {
+    return new InternetExplorerDriver(options);
+  }
+
+  public WebDriver createDriver(EdgeOptions options) {
+    return new EdgeDriver(options);
+  }
+
+  public WebDriver createDriver(SafariOptions options) {
+    return new SafariDriver(options);
+  }
+
+  public WebDriver createDriver(OperaOptions options) {
+    return new OperaDriver(options);
+  }
 
   public WebDriver createDriver(Capabilities capabilities) {
-    ReflectionBasedInstanceCreator creator = creators.get(capabilities.getBrowserName());
-    if (creator !=  null) {
-      return creator.createDriver(capabilities);
+    String browserName = capabilities.getBrowserName();
+    Function<Capabilities, WebDriver> creator = creators.get(browserName);
+    if (creator != null) {
+      return creator.apply(capabilities);
     }
+
+    String className = externalDriverClasses.get(browserName);
+    if (className != null) {
+      return new ReflectionBasedInstanceCreator(className).createDriver(capabilities);
+    }
+
     throw new DriverCreationError("Can't find local driver provider for capabilities " + capabilities);
   }
 
