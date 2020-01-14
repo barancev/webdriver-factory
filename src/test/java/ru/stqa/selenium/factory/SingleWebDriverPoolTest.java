@@ -111,7 +111,7 @@ public class SingleWebDriverPoolTest {
     assertThrows(Error.class, () -> factory.dismissDriver(driver2));
   }
 
-  private class BrokenFakeWebDriver extends FakeWebDriver {
+  private static class BrokenFakeWebDriver extends FakeWebDriver {
     public BrokenFakeWebDriver(Capabilities capabilities) {
       super(capabilities);
     }

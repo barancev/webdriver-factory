@@ -214,7 +214,7 @@ public class ThreadLocalSingleWebDriverPoolTest {
     assertEquals(threads.size(), drivers.size());
   }
 
-  private class BrokenFakeWebDriver extends FakeWebDriver {
+  private static class BrokenFakeWebDriver extends FakeWebDriver {
     public BrokenFakeWebDriver(Capabilities capabilities) {
       super(capabilities);
     }

@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 
 public final class ThreadLocalSingleWebDriverPool extends AbstractWebDriverPool {
 
-  private ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
+  private final ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
 
-  private Map<WebDriver, String> driverToKeyMap = Collections.synchronizedMap(new HashMap<>());
-  private Map<WebDriver, Thread> driverToThread = Collections.synchronizedMap(new HashMap<>());
+  private final Map<WebDriver, String> driverToKeyMap = Collections.synchronizedMap(new HashMap<>());
+  private final Map<WebDriver, Thread> driverToThread = Collections.synchronizedMap(new HashMap<>());
 
   public ThreadLocalSingleWebDriverPool() {
     Runtime.getRuntime().addShutdownHook(new Thread(ThreadLocalSingleWebDriverPool.this::dismissAll));

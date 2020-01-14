@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ReflectionBasedInstanceCreator {
 
-  private String driverClassName;
+  private final String driverClassName;
 
   public ReflectionBasedInstanceCreator(String driverClassName) {
     this.driverClassName = driverClassName;

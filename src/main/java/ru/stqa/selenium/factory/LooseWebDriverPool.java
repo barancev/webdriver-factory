@@ -25,7 +25,7 @@ import java.util.List;
 
 public final class LooseWebDriverPool extends AbstractWebDriverPool {
 
-  private List<WebDriver> drivers = new ArrayList<>();
+  private final List<WebDriver> drivers = new ArrayList<>();
 
   public LooseWebDriverPool() {
     Runtime.getRuntime().addShutdownHook(new Thread(LooseWebDriverPool.this::dismissAll));

@@ -38,7 +38,7 @@ import java.util.function.Function;
 
 public class DefaultLocalDriverProvider implements LocalDriverProvider {
 
-  private Map<String, Function<Capabilities, WebDriver>> creators = new ImmutableMap.Builder<String, Function<Capabilities, WebDriver>>()
+  private final Map<String, Function<Capabilities, WebDriver>> creators = new ImmutableMap.Builder<String, Function<Capabilities, WebDriver>>()
     .put(BrowserType.CHROME, caps -> new ChromeDriver(new ChromeOptions().merge(caps)))
     .put(BrowserType.FIREFOX, caps -> new FirefoxDriver(new FirefoxOptions().merge(caps)))
     .put(BrowserType.IE, caps -> new InternetExplorerDriver(new InternetExplorerOptions().merge(caps)))
@@ -47,7 +47,7 @@ public class DefaultLocalDriverProvider implements LocalDriverProvider {
     .put(BrowserType.OPERA_BLINK, caps -> new OperaDriver(new OperaOptions().merge(caps)))
     .build();
 
-  private Map<String, String> externalDriverClasses = new ImmutableMap.Builder<String, String>()
+  private final Map<String, String> externalDriverClasses = new ImmutableMap.Builder<String, String>()
     .put(BrowserType.OPERA, "com.opera.core.systems.OperaDriver")
     .put(BrowserType.HTMLUNIT, "org.openqa.selenium.htmlunit.HtmlUnitDriver")
     .build();
