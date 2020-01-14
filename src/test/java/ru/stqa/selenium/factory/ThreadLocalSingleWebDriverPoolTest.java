@@ -230,11 +230,7 @@ public class ThreadLocalSingleWebDriverPoolTest {
 
     WebDriver driver = factory.getDriver(fakeCapabilities);
     assertTrue(isActive(driver));
-    try {
-      factory.dismissDriver(driver);
-      fail("Should throw");
-    } catch (WebDriverException expected) {
-    }
+    assertThrows(WebDriverException.class, () -> factory.dismissDriver(driver));
 
     WebDriver driver2 = factory.getDriver(fakeCapabilities);
     assertNotSame(driver2, driver);
