@@ -1,7 +1,8 @@
 Web Driver Factory
 ====================
 
-[![Run Status](https://api.shippable.com/projects/58be80a4e4b9a205009c617c/badge?branch=master)](https://app.shippable.com/projects/58be80a4e4b9a205009c617c)
+[![Shippable Run Status](https://api.shippable.com/projects/58be80a4e4b9a205009c617c/badge?branch=master)](https://app.shippable.com/projects/58be80a4e4b9a205009c617c)
+[![CircleCI Run Status](https://circleci.com/gh/barancev/webdriver-factory.svg?style=svg)](https://circleci.com/gh/barancev/webdriver-factory)
 
 This library provides an utility to manage WebDriver instances. It helps to create, reuse and dismiss WebDriver instances.
 
