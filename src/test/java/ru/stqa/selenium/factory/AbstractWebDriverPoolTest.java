@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -88,11 +89,11 @@ public class AbstractWebDriverPoolTest {
   public void testCanHandleAlertsOnDriverAvailabilityCheck() {
     factory.setLocalDriverProvider(FakeAlertiveWebDriver::new);
 
-    WebDriver driver = factory.getDriver(DesiredCapabilities.firefox());
+    WebDriver driver = factory.getDriver(new FirefoxOptions());
     assertTrue(driver instanceof FakeAlertiveWebDriver);
     assertFalse(factory.isEmpty());
 
-    WebDriver driver2 = factory.getDriver(DesiredCapabilities.firefox());
+    WebDriver driver2 = factory.getDriver(new FirefoxOptions());
     assertSame(driver2, driver);
     assertFalse(factory.isEmpty());
 
@@ -109,7 +110,7 @@ public class AbstractWebDriverPoolTest {
       }
     });
 
-    WebDriver driver = factory.getDriver(new URL("http://localhost/"), DesiredCapabilities.firefox());
+    WebDriver driver = factory.getDriver(new URL("http://localhost/"), new FirefoxOptions());
     assertTrue(driver instanceof FakeWebDriver);
     assertFalse(factory.isEmpty());
 
