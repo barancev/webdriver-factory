@@ -18,13 +18,21 @@ package ru.stqa.selenium.factory;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,18 +46,42 @@ public class DefaultLocalDriverProviderTest {
     provider = new DefaultLocalDriverProvider();
   }
 
-  @Disabled
   @Test
+  @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
   void canInstantiateFirefoxDriverWithFirefoxOptions() {
     driver = provider.createDriver(new FirefoxOptions());
     assertTrue(driver instanceof FirefoxDriver);
   }
 
-  @Disabled
   @Test
+  @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
   void canInstantiateChromeDriverWithChromeOptions() {
     driver = provider.createDriver(new ChromeOptions());
     assertTrue(driver instanceof ChromeDriver);
+  }
+
+  @Test
+  @EnabledOnOs(OS.WINDOWS)
+  @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
+  void canInstantiateInternetExplorerDriverWithInternetExplorerOptions() {
+    driver = provider.createDriver(new InternetExplorerOptions());
+    assertTrue(driver instanceof InternetExplorerDriver);
+  }
+
+  @Test
+  @EnabledOnOs(OS.WINDOWS)
+  @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
+  void canInstantiateEdgeDriverWithEdgeOptions() {
+    driver = provider.createDriver(new EdgeOptions());
+    assertTrue(driver instanceof EdgeDriver);
+  }
+
+  @Test
+  @EnabledOnOs(OS.MAC)
+  @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
+  void canInstantiateSafariDriverWithSafariOptions() {
+    driver = provider.createDriver(new SafariOptions());
+    assertTrue(driver instanceof SafariDriver);
   }
 
   @AfterEach
